@@ -7,9 +7,6 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "start:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node server.js",
-    "dev:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node --watch server.js",
-    "data:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node scripts/validate_dataset.js",
     "test": "NODE_ENV=test node --test tests/unit.test.js tests/api.test.js",
     "data:convert": "node scripts/convert_csv_to_json.js",
     "data:validate": "node scripts/validate_dataset.js",
@@ -22,7 +19,10 @@
     "bran-org",
     "api",
     "academic-data",
-    "database-template",
+    "cbbd",
+    "febab",
+    "biblioteconomia",
+    "ciencia-da-informacao",
     "express"
   ],
   "author": "BRAN Org",
