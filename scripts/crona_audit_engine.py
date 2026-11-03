@@ -416,17 +416,17 @@ def generate_pr_markdown_report(schema_status, doi_summary, file_path):
 
     if schema_valid and dois_clean and orphans_clean:
         badge = "🟢 **Aprovado (100% íntegro — tudo pronto pro merge)**"
-        voice_quote = "Dei uma olhada nos dados e na linha temporal... tudo em ordem e sem anomalias. Tudo pronto pro merge."
+        voice_quote = "Schema validado e identificadores conferidos. Tudo certo pro merge."
     elif schema_valid and (not dois_clean or not orphans_clean):
         if not orphans_clean:
             badge = "🟡 **Aprovado com ressalvas (artigos sem identificador detectados)**"
-            voice_quote = "O schema tá válido, mas encontrei registros sem identificador único... precisamos ajustar pra não perder a rastreabilidade."
+            voice_quote = "O schema está válido, mas há registros sem identificador único. Precisamos corrigir antes do merge."
         else:
             badge = "🟡 **Aprovado com ressalvas (links inativos na fonte original)**"
-            voice_quote = "O schema tá íntegro, mas encontrei alguns links inativos na fonte original... listei abaixo para conferência."
+            voice_quote = "Schema válido. Alguns links/DOIs não responderam na fonte original e foram listados abaixo para conferência."
     else:
         badge = "🔴 **Ajustes necessários (inconsistências de schema)**"
-        voice_quote = "Detectei anomalias no schema nas linhas marcadas... dá uma olhada nos comentários inline pra gente ajustar."
+        voice_quote = "Inconsistências de schema encontradas. Veja os detalhes e os comentários inline para ajustar."
 
     if total_with_doi > 0:
         res_rate_str = f"`{doi_summary['resolution_rate'] * 100:.1f}%` ({doi_summary['valid_count']}/{doi_summary['total_checked']})"
@@ -479,7 +479,7 @@ def generate_fatal_error_report(file_path, err_msg):
     return f"""{STICKY_MARKER}
 ### Erro de Sintaxe JSON
 
-> *"Erro crítico na leitura do arquivo... a sintaxe JSON está corrompida. Corrija a formatação para prosseguir com a auditoria."*
+> *"Falha ao processar o arquivo: a sintaxe JSON está corrompida. Corrija a formatação para prosseguir com a auditoria."*
 
 **Arquivo auditado:** `{file_path}`  
 **Status:** ❌ **Arquivo corrompido ou mal formatado**
