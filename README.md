@@ -1,4 +1,4 @@
-# CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)
+# CBBD Open Data - Anais e Trabalhos Científicos (1954–2026)
 
 <p align="center">
   <a href="https://doi.org/10.5281/zenodo.pending"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.pending.svg" alt="Zenodo DOI"></a>
@@ -7,7 +7,7 @@
   <a href="#-como-usar-os-dados"><img src="https://img.shields.io/badge/Formatos-SQLite_%7C_CSV_%7C_JSON-blue.svg" alt="Formatos"></a>
 </p>
 
-Base de dados e diagnóstico documental de todas as 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), identificando as edições preservadas em plataformas digitais e as lacunas em acervos físicos.
+Base de dados aberta contendo todos os 3.385 trabalhos científicos publicados nos anais das edições digitalizadas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), promovido pela FEBAB, integrando o diagnóstico documental de preservação digital de todas as 31 edições históricas.
 
 ---
 
@@ -15,15 +15,16 @@ Base de dados e diagnóstico documental de todas as 31 edições históricas do 
 
 > [!WARNING]
 > **Status de Confiabilidade:** 🔴 **Crítico | Acervo Fragmentado (Grandes Lacunas Digitais)**  
-> 📌 **Diagnóstico Metodológico:** O CBBD possui 31 edições históricas (1954–2026), porém apenas 16 edições possuem anais ou coleções digitais ativas (1º ao 4º, 6º ao 11º no repositório Omeka; 25º na coleção Omeka; 26º e 27º em suplementos da RBBD; e 28º a 31º no portal OJS de eventos). As edições do 12º ao 24º CBBD (1983–2011) e o 5º CBBD (1967) não possuem anais digitais centralizados pela FEBAB (circulação apenas em anais impressos e CD-ROMs físicos fora de linha sob custódia de bibliotecas depositárias).
+> 📌 **Diagnóstico Metodológico:** O CBBD possui 31 edições históricas (1954–2026), porém apenas 16 edições possuem anais ou coleções digitais ativas (1º ao 4º, 6º ao 11º no repositório Omeka; 25º na coleção Omeka; 26º e 27º em suplementos da RBBD; e 28º a 31º no portal OJS de eventos), totalizando **3.385 artigos catalogados**. As edições do 12º ao 24º CBBD (1983–2011) e o 5º CBBD (1967) não possuem anais digitais centralizados pela FEBAB (circulação apenas em anais impressos e CD-ROMs físicos fora de linha sob custódia de bibliotecas depositárias).
 
 | Métrica / Atributo | Detalhes do Acervo |
 | :--- | :--- |
 | **Período Histórico** | 1954–2026 (31 Edições Históricas) |
-| **Total de Trabalhos** | **31 artigos científicos catalogados** |
-| **Textos Completos (PDF)** | 16 edições com anais/coleções digitais online mapeadas; 15 edições em acervo impresso/CD-ROM físico sob custódia de bibliotecas depositárias |
+| **Total de Trabalhos** | **3.385 artigos científicos catalogados** |
+| **Cobertura de Resumos** | 3.271 trabalhos com resumo integral catalogado (96,6% de preenchimento) |
+| **Textos Completos** | Links diretos para páginas de publicação e arquivos nos servidores da FEBAB |
 | **Integridade Criptográfica** | Hash SHA-256 por arquivo e rastreabilidade estrita (`provenance.json`) |
-| **Formatos Disponíveis** | SQLite3 (`.sqlite`), CSV (UTF-8 BOM), JSON, BibTeX (`.bib`), RIS (`.ris`) |
+| **Formatos Disponíveis** | JSON, SQLite3 (`.sqlite`), CSV (UTF-8 BOM), BibTeX (`.bib`), RIS (`.ris`) |
 | **Licença dos Dados** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (Uso acadêmico; vedada ingestão por IA comercial) |
 
 ---
