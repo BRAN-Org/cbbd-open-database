@@ -1,6 +1,6 @@
 {
-  "title": "CBBD Open Data: Diagnóstico Documental e Mapeamento Histórico dos Anais do CBBD (1954–2026)",
-  "description": "<p>Base de dados aberta e diagnóstico de preservação digital de todas as 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), promovido pela FEBAB. O dataset mapeia os anais digitalizados (Omeka, OJS, RBBD) e documenta as lacunas físicas (edições em papel e CD-ROM sob custódia de bibliotecas depositárias), disponibilizado pela BRAN Org sob princípios FAIR e BOAI.</p>",
+  "title": "CBBD Open Data: Anais e Trabalhos Científicos do CBBD (1954–2026)",
+  "description": "<p>Base de dados aberta contendo 3.385 trabalhos científicos publicados nos anais do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), promovido pela FEBAB, incluindo o diagnóstico de preservação digital de todas as 31 edições históricas, disponibilizado pela BRAN Org sob princípios FAIR e BOAI.</p>",
   "upload_type": "dataset",
   "creators": [
     {

@@ -9,15 +9,15 @@
     "issuesUrl": "https://github.com/BRAN-Org/cbbd-open-database/issues"
   },
   "dataset": {
-    "title": "CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)",
+    "title": "CBBD Open Data - Anais e Trabalhos Científicos (1954–2026)",
     "subtitle": "Acervo Histórico e Preservação Digital dos Anais da FEBAB",
-    "description": "Base de dados e diagnóstico documental de todas as 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), identificando as edições preservadas em plataformas digitais e as lacunas em acervos físicos.",
+    "description": "Base de dados aberta contendo todos os trabalhos científicos publicados nos anais do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD) de 1954 a 2026, promovido pela FEBAB, disponibilizada sob princípios FAIR e BOAI.",
     "version": "1.0.0",
     "doi": "10.5281/zenodo.pending",
     "license": "Code: GNU GPLv3 | Data: CC BY-NC-SA 4.0 (Uso acadêmico; vedada ingestão comercial de IA)",
     "entityName": "articles",
-    "singularName": "Edição / Anais",
-    "pluralName": "Edições / Anais",
+    "singularName": "Artigo",
+    "pluralName": "Artigos",
     "primaryKey": "id",
     "secondaryKey": "doi"
   },
@@ -29,47 +29,46 @@
       "keywords",
       "city",
       "state",
-      "status",
-      "platform",
-      "availability"
+      "edition",
+      "source_platform"
     ],
     "facets": [
       {
         "key": "year",
-        "label": "Ano",
+        "label": "Edição / Ano",
         "type": "number",
         "multi": true,
         "targetField": "year"
       },
       {
-        "key": "availability",
-        "label": "Disponibilidade Digital",
+        "key": "author",
+        "label": "Autor",
         "type": "string",
-        "targetField": "availability"
+        "targetField": "authors"
       },
       {
-        "key": "status",
-        "label": "Status do Acervo",
+        "key": "keyword",
+        "label": "Palavra-chave / Tópico",
         "type": "string",
-        "targetField": "status"
+        "targetField": "keywords"
+      },
+      {
+        "key": "edition",
+        "label": "Número da Edição",
+        "type": "string",
+        "targetField": "edition"
       },
       {
         "key": "platform",
         "label": "Plataforma de Acesso",
         "type": "string",
-        "targetField": "platform"
+        "targetField": "source_platform"
       },
       {
         "key": "state",
         "label": "UF Sede",
         "type": "string",
         "targetField": "state"
-      },
-      {
-        "key": "city",
-        "label": "Cidade Sede",
-        "type": "string",
-        "targetField": "city"
       }
     ],
     "sortFields": [
@@ -90,21 +89,21 @@
   "stats": {
     "topLists": [
       {
-        "key": "topStatus",
-        "label": "Status do Acervo",
-        "sourceField": "status",
+        "key": "topAuthors",
+        "label": "Autores Mais Prolíficos",
+        "sourceField": "authors",
         "limit": 10
       },
       {
-        "key": "topAvailability",
-        "label": "Disponibilidade Digital",
-        "sourceField": "availability",
-        "limit": 5
+        "key": "topKeywords",
+        "label": "Palavras-chave Mais Frequentes",
+        "sourceField": "keywords",
+        "limit": 10
       },
       {
-        "key": "topPlatforms",
-        "label": "Plataformas de Custódia",
-        "sourceField": "platform",
+        "key": "topEditions",
+        "label": "Edições com Mais Trabalhos",
+        "sourceField": "edition",
         "limit": 10
       },
       {
@@ -112,30 +111,13 @@
         "label": "Distribuição Geográfica (UF)",
         "sourceField": "state",
         "limit": 10
-      },
-      {
-        "key": "topAuthors",
-        "label": "Autores e Entidades",
-        "sourceField": "authors",
-        "limit": 10
-      },
-      {
-        "key": "topKeywords",
-        "label": "Palavras-chave e Tópicos",
-        "sourceField": "keywords",
-        "limit": 10
       }
     ],
     "breakdowns": [
       {
         "key": "yearDistribution",
-        "label": "Distribuição Temporal",
+        "label": "Distribuição por Ano",
         "sourceField": "year"
-      },
-      {
-        "key": "availabilityDistribution",
-        "label": "Status Digital",
-        "sourceField": "availability"
       }
     ]
   }
