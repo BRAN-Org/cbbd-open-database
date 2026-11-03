@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this dataset or software, please cite it as below."
+title: "CBBD Open Database: Diagnóstico e Mapeamento dos Anais do Congresso Brasileiro de Biblioteconomia e Documentação (1954–2026)"
+version: 1.0.0
+date-released: 2026-11-03
+doi: "10.5281/zenodo.pending"
+url: "https://github.com/BRAN-Org/cbbd-open-database"
+repository-code: "https://github.com/BRAN-Org/cbbd-open-database"
+license: GPL-3.0-or-later
+authors:
+  - name: "BRAN Org"
+    website: "https://github.com/BRAN-Org"
+keywords:
+  - open-data
+  - cbbd
+  - febab
+  - library-science
+  - information-science
+  - research-infrastructure

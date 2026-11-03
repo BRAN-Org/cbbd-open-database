@@ -4,48 +4,139 @@
     "url": "https://github.com/BRAN-Org",
     "logo": "https://avatars.githubusercontent.com/u/328064865?v=4",
     "institutionName": "BRAN Org",
-    "githubUrl": "https://github.com/BRAN-Org/bran-web-database-template",
-    "doiUrl": "",
-    "issuesUrl": "https://github.com/BRAN-Org/bran-web-database-template/issues"
+    "githubUrl": "https://github.com/BRAN-Org/cbbd-open-database",
+    "doiUrl": "https://doi.org/10.5281/zenodo.pending",
+    "issuesUrl": "https://github.com/BRAN-Org/cbbd-open-database/issues"
   },
   "dataset": {
-    "title": "BRAN Academic Database Template",
-    "subtitle": "Acervo e Base de Dados Abertos",
-    "description": "Infraestrutura aberta de dados acadêmicos e científicos. Este portal disponibiliza acervos públicos de anais, edições e periódicos em formatos limpos e padronizados, com API REST pública e ferramentas para análise cientométrica e bibliométrica no Brasil.",
+    "title": "CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)",
+    "subtitle": "Acervo Histórico e Preservação Digital dos Anais da FEBAB",
+    "description": "Base de dados e diagnóstico documental de todas as 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), identificando as edições preservadas em plataformas digitais e as lacunas em acervos físicos.",
     "version": "1.0.0",
-    "doi": "",
-    "zenodoDoi": "",
-    "zenodoUrl": "",
-    "license": "Code: GNU GPLv3 | Data: CC BY-NC-SA 4.0 (Não-Comercial & Sem Treino Comercial de IA)",
+    "doi": "10.5281/zenodo.pending",
+    "license": "Code: GNU GPLv3 | Data: CC BY-NC-SA 4.0 (Uso acadêmico; vedada ingestão comercial de IA)",
     "entityName": "articles",
-    "singularName": "Artigo",
-    "pluralName": "Artigos",
-    "primaryKey": "doi",
-    "secondaryKey": "id"
+    "singularName": "Edição / Anais",
+    "pluralName": "Edições / Anais",
+    "primaryKey": "id",
+    "secondaryKey": "doi"
   },
   "schema": {
-    "searchFields": ["title", "abstract", "authors", "keywords", "section", "issue"],
+    "searchFields": [
+      "title",
+      "abstract",
+      "authors",
+      "keywords",
+      "city",
+      "state",
+      "status",
+      "platform",
+      "availability"
+    ],
     "facets": [
-      { "key": "year", "label": "Ano / Edição", "type": "number", "multi": true },
-      { "key": "author", "label": "Autor / Pesquisador", "type": "string", "targetField": "authors" },
-      { "key": "section", "label": "Eixo Temático / Seção", "type": "string", "targetField": "section" },
-      { "key": "keyword", "label": "Palavra-chave / Tópico", "type": "string", "targetField": "keywords" }
+      {
+        "key": "year",
+        "label": "Ano",
+        "type": "number",
+        "multi": true,
+        "targetField": "year"
+      },
+      {
+        "key": "availability",
+        "label": "Disponibilidade Digital",
+        "type": "string",
+        "targetField": "availability"
+      },
+      {
+        "key": "status",
+        "label": "Status do Acervo",
+        "type": "string",
+        "targetField": "status"
+      },
+      {
+        "key": "platform",
+        "label": "Plataforma de Acesso",
+        "type": "string",
+        "targetField": "platform"
+      },
+      {
+        "key": "state",
+        "label": "UF Sede",
+        "type": "string",
+        "targetField": "state"
+      },
+      {
+        "key": "city",
+        "label": "Cidade Sede",
+        "type": "string",
+        "targetField": "city"
+      }
     ],
     "sortFields": [
-      { "key": "year", "label": "Ano / Edição" },
-      { "key": "title", "label": "Título" },
-      { "key": "doi", "label": "DOI" }
+      {
+        "key": "year",
+        "label": "Ano de Edição"
+      },
+      {
+        "key": "title",
+        "label": "Título"
+      },
+      {
+        "key": "edition",
+        "label": "Número da Edição"
+      }
     ]
   },
   "stats": {
     "topLists": [
-      { "key": "topAuthors", "label": "Principais Autores / Pesquisadores", "sourceField": "authors", "limit": 10 },
-      { "key": "topKeywords", "label": "Palavras-chave & Tópicos", "sourceField": "keywords", "limit": 10 },
-      { "key": "topSections", "label": "Eixos Temáticos / Seções", "sourceField": "section", "limit": 10 }
+      {
+        "key": "topStatus",
+        "label": "Status do Acervo",
+        "sourceField": "status",
+        "limit": 10
+      },
+      {
+        "key": "topAvailability",
+        "label": "Disponibilidade Digital",
+        "sourceField": "availability",
+        "limit": 5
+      },
+      {
+        "key": "topPlatforms",
+        "label": "Plataformas de Custódia",
+        "sourceField": "platform",
+        "limit": 10
+      },
+      {
+        "key": "topStates",
+        "label": "Distribuição Geográfica (UF)",
+        "sourceField": "state",
+        "limit": 10
+      },
+      {
+        "key": "topAuthors",
+        "label": "Autores e Entidades",
+        "sourceField": "authors",
+        "limit": 10
+      },
+      {
+        "key": "topKeywords",
+        "label": "Palavras-chave e Tópicos",
+        "sourceField": "keywords",
+        "limit": 10
+      }
     ],
     "breakdowns": [
-      { "key": "yearDistribution", "label": "Distribuição por Ano / Edição", "sourceField": "year" },
-      { "key": "sectionBreakdown", "label": "Distribuição por Eixo Temático", "sourceField": "section" }
+      {
+        "key": "yearDistribution",
+        "label": "Distribuição Temporal",
+        "sourceField": "year"
+      },
+      {
+        "key": "availabilityDistribution",
+        "label": "Status Digital",
+        "sourceField": "availability"
+      }
     ]
   }
 }

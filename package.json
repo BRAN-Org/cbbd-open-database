@@ -1,7 +1,7 @@
 {
-  "name": "bran-web-database-template",
-  "version": "1.5.0",
-  "description": "Template leve e reproduzível para APIs REST públicas e Dashboards de bases de dados acadêmicas da BRAN Org.",
+  "name": "cbbd-open-database",
+  "version": "1.0.0",
+  "description": "Base de dados aberta e diagnóstico de preservação digital dos anais do CBBD (1954–2026) da FEBAB — BRAN Org.",
   "main": "server.js",
   "type": "module",
   "scripts": {

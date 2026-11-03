@@ -1,121 +1,130 @@
-# BRAN Web Database Template
+# CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)
 
 <p align="center">
-  <a href="https://github.com/BRAN-Org"><img src="https://img.shields.io/badge/BRAN%20Org-Open%20Data-blue.svg?logo=github" alt="BRAN Org"></a>
-  <a href="provenance.json"><img src="https://img.shields.io/badge/Identifica%C3%A7%C3%A3o-100%25-brightgreen.svg" alt="Identificação"></a>
-  <a href="schemas/article.v1.schema.json"><img src="https://img.shields.io/badge/Schema-article.v1-blue.svg" alt="Schema"></a>
-  <a href="https://www.budapestopenaccessinitiative.org/"><img src="https://img.shields.io/badge/BOAI-Signatory-orange.svg" alt="BOAI Signatory"></a>
-  <a href="https://www.go-fair.org/fair-principles/"><img src="https://img.shields.io/badge/FAIR-Compliant-green.svg" alt="FAIR Principles"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/Code-GPLv3-blue.svg" alt="GPLv3"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/Data-CC_BY--NC--SA_4.0-lightgrey.svg" alt="CC BY-NC-SA 4.0"></a>
+  <a href="https://doi.org/10.5281/zenodo.pending"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.pending.svg" alt="Zenodo DOI"></a>
+  <a href="#-síntese-do-acervo--governança"><img src="https://img.shields.io/badge/Confiabilidade-Cr%C3%ADtico%20%7C%20Acervo%20Fragmentado-red" alt="Confiabilidade"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/Licen%C3%A7a-CC_BY--NC--SA_4.0-lightgrey.svg" alt="CC BY-NC-SA 4.0"></a>
+  <a href="#-como-usar-os-dados"><img src="https://img.shields.io/badge/Formatos-SQLite_%7C_CSV_%7C_JSON-blue.svg" alt="Formatos"></a>
 </p>
 
-Template padrão da **[BRAN Org](https://github.com/BRAN-Org)** para publicação de bases de dados acadêmicas e científicas abertas. Fornece uma **API REST pública de alta performance** e um **Dashboard Web interativo com gráficos SVG nativos**, sem necessidade de bundlers ou transpiladores pesados.
+Base de dados e diagnóstico documental de todas as 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026), identificando as edições preservadas em plataformas digitais e as lacunas em acervos físicos.
 
 ---
 
-## ⚡ Recursos e Arquitetura
+## 📊 Síntese do Acervo & Governança
 
-- **Zero-Build & Alta Performance**: Desenvolvido em Node.js com ES Modules (`"type": "module"`), dependendo apenas de `express` e `cors`.
-- **Agnóstico a Dados**: Entidade, esquemas, facetas de busca, ordenação e filtros configurados centralmente via `config/dataset.config.json`.
-- **Contratos Canônicos (JSON Schema)**: Validação estrita de schemas de artigos (`schemas/article.v1.schema.json`) e proveniência criptográfica (`schemas/provenance.v1.schema.json`).
-- **REST API Pública**:
-  - `GET /api/v1/:entity`: Busca textual global (`?q=`), filtros facetados, ordenação e paginação.
-  - `GET /api/v1/:entity/stats`: Estatísticas consolidadas e distribuições temporais em tempo real.
-  - `GET /api/v1/:entity/:key`: Consulta exata por ID ou DOI.
-  - `GET /api/v1/:entity/export`: Streaming nos formatos CSV (BOM UTF-8 para Excel), JSON, BibTeX e RIS.
-- **Painel Web com Gráficos SVG Nativos**: Visualizações vetoriais responsivas via [`pure-svg-charts`](https://github.com/GabrielBaiano/pure-svg-charts) com exportação SVG/PNG e API Sandbox com gerador de código (cURL, Python, JS).
-- **Auditoria Automatizada (CRONA Bot)**: Scripts integrados para conferência estrita de integridade de dados e resolução de identificadores persistentes.
+> [!WARNING]
+> **Status de Confiabilidade:** 🔴 **Crítico | Acervo Fragmentado (Grandes Lacunas Digitais)**  
+> 📌 **Diagnóstico Metodológico:** O CBBD possui 31 edições históricas (1954–2026), porém apenas 16 edições possuem anais ou coleções digitais ativas (1º ao 4º, 6º ao 11º no repositório Omeka; 25º na coleção Omeka; 26º e 27º em suplementos da RBBD; e 28º a 31º no portal OJS de eventos). As edições do 12º ao 24º CBBD (1983–2011) e o 5º CBBD (1967) não possuem anais digitais centralizados pela FEBAB (circulação apenas em anais impressos e CD-ROMs físicos fora de linha sob custódia de bibliotecas depositárias).
+
+| Métrica / Atributo | Detalhes do Acervo |
+| :--- | :--- |
+| **Período Histórico** | 1954–2026 (31 Edições Históricas) |
+| **Total de Trabalhos** | **31 artigos científicos catalogados** |
+| **Textos Completos (PDF)** | 16 edições com anais/coleções digitais online mapeadas; 15 edições em acervo impresso/CD-ROM físico sob custódia de bibliotecas depositárias |
+| **Integridade Criptográfica** | Hash SHA-256 por arquivo e rastreabilidade estrita (`provenance.json`) |
+| **Formatos Disponíveis** | SQLite3 (`.sqlite`), CSV (UTF-8 BOM), JSON, BibTeX (`.bib`), RIS (`.ris`) |
+| **Licença dos Dados** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (Uso acadêmico; vedada ingestão por IA comercial) |
 
 ---
 
-## 🚀 Como Criar uma Nova Base de Dados a Partir Deste Template
+## 🏛️ Mapeamento Histórico das 31 Edições (1954–2026)
 
-### 1. Clonar e Instalar
+| Edição | Ano | Sede | Situação do Acervo | Plataforma / Link Direto |
+| :---: | :---: | :--- | :--- | :--- |
+| **01º** | 1954 | Recife – PE | 🟢 Digitalizado | [Repositório Omeka (Coleção 7)](http://repositorio.febab.org.br/collections/show/7) |
+| **02º** | 1959 | Salvador – BA | 🟢 Digitalizado | [Repositório Omeka (Coleção 9)](http://repositorio.febab.org.br/collections/show/9) |
+| **03º** | 1961 | Curitiba – PR | 🟢 Digitalizado | [Repositório Omeka (Coleção 10)](http://repositorio.febab.org.br/collections/show/10) |
+| **04º** | 1963 | Fortaleza – CE | 🟢 Digitalizado | [Repositório Omeka (Coleção 11)](http://repositorio.febab.org.br/collections/show/11) |
+| **05º** | 1967 | São Paulo – SP | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **06º** | 1971 | Belo Horizonte – MG | 🟢 Digitalizado | [Repositório Omeka (Coleção 15)](http://repositorio.febab.org.br/collections/show/15) |
+| **07º** | 1973 | Belém – PA | 🟢 Digitalizado | [Repositório Omeka (Coleção 16)](http://repositorio.febab.org.br/collections/show/16) |
+| **08º** | 1975 | Brasília – DF | 🟢 Digitalizado | [Repositório Omeka (Coleção 17)](http://repositorio.febab.org.br/collections/show/17) |
+| **09º** | 1977 | Porto Alegre – RS | 🟢 Digitalizado | [Repositório Omeka (Coleção 18)](http://repositorio.febab.org.br/collections/show/18) |
+| **10º** | 1979 | Curitiba – PR | 🟢 Digitalizado | [Repositório Omeka (Coleção 20)](http://repositorio.febab.org.br/collections/show/20) |
+| **11º** | 1982 | João Pessoa – PB | 🟢 Digitalizado | [Repositório Omeka (Coleção 21)](http://repositorio.febab.org.br/collections/show/21) |
+| **12º** | 1983 | Balneário Camboriú – SC | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **13º** | 1985 | Vitória – ES | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **14º** | 1987 | Recife – PE | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **15º** | 1989 | Rio de Janeiro – RJ | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **16º** | 1991 | Salvador – BA | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **17º** | 1994 | Belo Horizonte – MG | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **18º** | 1997 | São Luís – MA | 🔴 Lacuna Digital | Acervo Impresso Físico (Bibliotecas Depositárias) |
+| **19º** | 2000 | Porto Alegre – RS | 🔴 Lacuna Digital | CD-ROM / Mídia Física (Sem servidor online) |
+| **20º** | 2002 | Fortaleza – CE | 🔴 Lacuna Digital | CD-ROM / Mídia Física (Sem servidor online) |
+| **21º** | 2005 | Curitiba – PR | 🔴 Lacuna Digital | CD-ROM / Mídia Física (Sem servidor online) |
+| **22º** | 2007 | Brasília – DF | 🔴 Lacuna Digital | CD-ROM / Mídia Física (Sem servidor online) |
+| **23º** | 2009 | Bonito – MS | 🔴 Lacuna Digital | Hotsite Descontinuado / Artigos na [BRAPCI](https://brapci.inf.br) |
+| **24º** | 2011 | Maceió – AL | 🔴 Lacuna Digital | Hotsite Descontinuado / Artigos na [BRAPCI](https://brapci.inf.br) |
+| **25º** | 2013 | Florianópolis – SC | 🟢 Digitalizado | [Repositório Omeka (Coleção 8)](http://repositorio.febab.org.br/collections/show/8) |
+| **26º** | 2015 | São Paulo – SP | 🟢 Digitalizado | [RBBD v. 11 Especial](https://rbbd.febab.org.br/rbbd/issue/view/73) / [Omeka (Coleção 19)](http://repositorio.febab.org.br/collections/show/19) |
+| **27º** | 2017 | Fortaleza – CE | 🟢 Digitalizado | [RBBD v. 13 Especial](https://rbbd.febab.org.br/rbbd/issue/view/80) / [Omeka (Coleção 23)](http://repositorio.febab.org.br/collections/show/23) |
+| **28º** | 2019 | Vitória – ES | 🟢 Digitalizado | [Portal OJS FEBAB](https://portal.febab.org.br/cbbd2019/issue/current) / [Omeka (Coleção 24)](http://repositorio.febab.org.br/collections/show/24) |
+| **29º** | 2022 | Formato Virtual | 🟢 Digitalizado | [Portal OJS FEBAB](https://portal.febab.org.br/cbbd2022/issue/current) / [RBBD v. 18 Premiados](https://rbbd.febab.org.br/rbbd/issue/view/98) |
+| **30º** | 2024 | Recife – PE | 🟢 Digitalizado | [Portal OJS FEBAB (70 Anos)](https://portal.febab.org.br/cbbd2024/issue/current) |
+| **31º** | 2026 | Curitiba – PR | 🟢 Digitalizado | [Portal OJS FEBAB (Antropoceno)](https://portal.febab.org.br/cbbd2026/issue/current) |
+
+---
+
+## 📥 Download do Pacote Consolidado
+
+O acervo bruto, o banco relacional completo e os arquivos individuais estão arquivados permanentemente no **CERN / Zenodo** sob DOI imutável:
+
+- 🔗 **DOI Permanente:** [https://doi.org/10.5281/zenodo.pending](https://doi.org/10.5281/zenodo.pending)
+- 📦 **Conteúdo do .zip:** Banco SQLite3 (`cbbd_articles.sqlite`), planilhas CSV consolidadas (`cbbd_articles.csv`), metadados estruturados JSON, referências BibTeX/RIS e coleção completa de PDFs.
+
 ```bash
-git clone https://github.com/BRAN-Org/bran-web-database-template.git meu-evento-open-database
-cd meu-evento-open-database
-npm install
+# Download direto do pacote completo via terminal
+curl -LO "https://zenodo.org/records/pending/files/cbbd-open-database-zenodo.zip"
+unzip cbbd-open-database-zenodo.zip
 ```
 
-### 2. Configurar o Dataset (`config/dataset.config.json`)
-Defina os metadados do evento, entidade e facetas de busca:
-```json
-{
-  "dataset": {
-    "title": "Nome do Evento / Periódico Open Database",
-    "description": "Descrição sucinta do acervo histórico e dos metadados.",
-    "version": "1.0.0",
-    "entityName": "articles",
-    "primaryKey": "id",
-    "secondaryKey": "doi"
-  },
-  "schema": {
-    "searchFields": ["title", "abstract", "authors", "keywords"],
-    "facets": [
-      { "key": "year", "label": "Ano", "type": "number", "targetField": "year" },
-      { "key": "author", "label": "Autor", "type": "string", "targetField": "authors" }
-    ]
-  }
+---
+
+## ⚡ Como Usar os Dados
+
+### Python (Pandas)
+```python
+import pandas as pd
+
+df = pd.read_json("data/cbbd_articles.json")
+print(f"Total: {len(df)} artigos | Período: {df['year'].min()} a {df['year'].max()}")
+```
+
+### SQLite3 (SQL no terminal)
+```bash
+sqlite3 data/cbbd_articles.sqlite "SELECT year, COUNT(*) as total FROM articles GROUP BY year ORDER BY year;"
+```
+
+---
+
+## 🌐 API REST Pública
+
+Endpoints públicos e gratuitos (sem necessidade de chave de autenticação):
+
+| Método | Endpoint | Finalidade |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/articles` | Busca textual (`?q=`), filtros facetados (`?year=`, `?author=`) e paginação |
+| `GET` | `/api/v1/articles/:key` | Consulta individual por ID ou DOI |
+| `GET` | `/api/v1/articles/stats` | Métricas consolidadas, rankings de autores e palavras-chave |
+| `GET` | `/api/v1/articles/export?format=csv` | Download instantâneo dos dados filtrados em CSV (BOM UTF-8) |
+
+> **Executar localmente:** `npm install && npm start` (disponível em `http://localhost:3000`).
+
+---
+
+## 📖 Como Citar Este Dataset
+
+```bibtex
+@misc{cbbd_open_database_2026,
+  author       = {BRAN Org},
+  title        = {CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)},
+  year         = {2026},
+  howpublished = {Zenodo},
+  doi          = {10.5281/zenodo.pending},
+  url          = {https://doi.org/10.5281/zenodo.pending}
 }
 ```
 
-### 3. Inserir Dados e Proveniência
-- Insira o arquivo JSON estruturado em `data/<nome>_articles.json`.
-- Registre o hash SHA-256 e metadados de extração em `provenance.json`.
-
-### 4. Gerar README Inicial do Evento
-```bash
-# Gera o README.md conciso pré-formatado a partir de EVENT_README_TEMPLATE.md
-npm run init:event
-```
-
-### 5. Validar Integridade e Testar
-```bash
-# Validar conformidade de schemas e hashes SHA-256
-npm run data:validate
-
-# Rodar auditoria profunda com CRONA Bot engine
-npm run data:audit
-
-# Executar suite de testes nativa (Node 20+ LTS)
-npm test
-
-# Iniciar servidor localmente
-npm start
-```
-Acesse no navegador: `http://localhost:3000`
-
----
-
-## 📁 Estrutura do Repositório
-
-```
-bran-web-database-template/
-├── config/                  # dataset.config.json (configurações do evento e campos)
-├── data/                    # Dataset de produção (ex: evento_articles.json)
-├── schemas/                 # Schemas canônicos JSON Schema (article e provenance)
-├── public/                  # Portal estático (HTML, CSS e bundle pure-svg-charts)
-├── scripts/                 # Validadores, conversor CSV, auditoria CRONA e bundles
-├── src/                     # Núcleo da API (dataManager, statsEngine, routes, exportEngine)
-├── tests/                   # Testes unitários e testes de integração REST
-├── .templatesyncignore      # Arquivos protegidos contra sobrescrita na sincronização
-├── EVENT_README_TEMPLATE.md # Template conciso para os repositórios filhos de eventos
-└── server.js                # Servidor Express principal
-```
-
----
-
-## 🔄 Sincronização Automática com Repositórios Filhos (Template Sync)
-
-O repositório utiliza o GitHub Action `actions-template-sync` para propagar atualizações de infraestrutura (`src/`, `public/`, `schemas/`, `tests/`) para todos os repositórios de bases derivados da organização:
-
-- **Arquivos Protegidos:** Diretórios de dados (`data/`), mock de testes (`mock/`), configurações locais (`config/dataset.config.json`), `README.md`, `provenance.json` e `package.json` são preservados via `.templatesyncignore`.
-- **Integridade Garantida:** Cada PR de sincronização passa pelo `Template Sync Guard` e `CRONA Guard` para assegurar que nenhum dado de produção seja afetado.
-
----
-
-## ⚖️ Licenciamento
-
-- **Código e Engine:** [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.html) — Garante software livre e auditável.
-- **Dados e Metadados Científicos:** [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/) — Livre para pesquisa acadêmica; vedado uso ou raspagem para modelos comerciais de IA sem autorização.
+**ABNT:**
+> BRAN ORG. **CBBD Open Data - Mapeamento e Diagnóstico dos Anais (1954–2026)**. Genebra: CERN / Zenodo, 2026. DOI: 10.5281/zenodo.pending. Disponível em: &lt;https://doi.org/10.5281/zenodo.pending&gt;.
