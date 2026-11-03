@@ -16,14 +16,14 @@
     "DOI_RESOLVED": 0,
     "DOI_UNRESOLVED": 0,
     "OJS_INTERNAL_ID": 0,
-    "CANONICAL_SLUG": 31,
+    "CANONICAL_SLUG": 39,
     "HANDLE_SYSTEM": 0,
     "UUID_IDENTIFIER": 0,
     "CONTENT_HASH": 0,
     "PERMALINK_URI": 0,
     "ORPHAN_UNIDENTIFIED": 0
   },
-  "last_audit_at": "2026-11-03T11:09:16.044280+00:00",
+  "last_audit_at": "2026-11-03T11:09:50.475607+00:00",
   "audit_history": [
     {
       "timestamp": "2026-11-03T10:25:54.107200+00:00",
@@ -60,6 +60,27 @@
         "DOI_UNRESOLVED": 0,
         "OJS_INTERNAL_ID": 0,
         "CANONICAL_SLUG": 31,
+        "HANDLE_SYSTEM": 0,
+        "UUID_IDENTIFIER": 0,
+        "CONTENT_HASH": 0,
+        "PERMALINK_URI": 0,
+        "ORPHAN_UNIDENTIFIED": 0
+      }
+    },
+    {
+      "timestamp": "2026-11-03T11:09:50.475607+00:00",
+      "auditor": "crona-bot[bot]",
+      "total_records": 39,
+      "total_checked": 0,
+      "valid_count": 0,
+      "broken_count": 0,
+      "resolution_rate": 1.0,
+      "global_identification_rate": 1.0,
+      "identifiers_breakdown": {
+        "DOI_RESOLVED": 0,
+        "DOI_UNRESOLVED": 0,
+        "OJS_INTERNAL_ID": 0,
+        "CANONICAL_SLUG": 39,
         "HANDLE_SYSTEM": 0,
         "UUID_IDENTIFIER": 0,
         "CONTENT_HASH": 0,
