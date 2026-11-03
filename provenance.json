@@ -4,9 +4,9 @@
   "scraped_at": "2026-11-03T10:23:31.335509+00:00",
   "extractor_name": "cbbd_historical_curator_v1",
   "extractor_version": "1.0.0",
-  "raw_data_sha256": "11149b43314e2d5386d2ab0ff23209b992602172a96db81a4bad0a6aaf3fd5e8",
+  "raw_data_sha256": "c364c790bedc463185265a723eb8e0f74b822f1fc23c981aa8b9e707154a919f",
   "health_level": "HIGH_FIDELITY",
-  "total_records": 31,
+  "total_records": 39,
   "missing_doi_count": 31,
   "missing_abstract_count": 0,
   "notes": "Diagnóstico e mapeamento documental das 31 edições históricas do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD, 1954–2026). Classificação Vermelha (Crítico / Acervo Fragmentado) atribuída em estrita conformidade com as diretrizes da BRAN Org, documentando que 15 das 31 edições históricas (V CBBD e XII ao XXIV CBBD, período 1983–2011) não possuem anais ou coleções digitais ativas na infraestrutura da FEBAB, encontrando-se apenas em tomos impressos e CD-ROMs físicos dispersos sob custódia de bibliotecas depositárias.",
@@ -23,7 +23,7 @@
     "PERMALINK_URI": 0,
     "ORPHAN_UNIDENTIFIED": 0
   },
-  "last_audit_at": "2026-11-03T10:52:44.150715+00:00",
+  "last_audit_at": "2026-11-03T11:09:16.044280+00:00",
   "audit_history": [
     {
       "timestamp": "2026-11-03T10:25:54.107200+00:00",
