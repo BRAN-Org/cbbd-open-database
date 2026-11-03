@@ -1,0 +1,51 @@
+{
+  "organization": {
+    "name": "BRAN Org",
+    "url": "https://github.com/BRAN-Org",
+    "logo": "https://avatars.githubusercontent.com/u/328064865?v=4",
+    "institutionName": "BRAN Org",
+    "githubUrl": "https://github.com/BRAN-Org/bran-web-database-template",
+    "doiUrl": "",
+    "issuesUrl": "https://github.com/BRAN-Org/bran-web-database-template/issues"
+  },
+  "dataset": {
+    "title": "BRAN Academic Database Template",
+    "subtitle": "Acervo e Base de Dados Abertos",
+    "description": "Infraestrutura aberta de dados acadêmicos e científicos. Este portal disponibiliza acervos públicos de anais, edições e periódicos em formatos limpos e padronizados, com API REST pública e ferramentas para análise cientométrica e bibliométrica no Brasil.",
+    "version": "1.0.0",
+    "doi": "",
+    "zenodoDoi": "",
+    "zenodoUrl": "",
+    "license": "Code: GNU GPLv3 | Data: CC BY-NC-SA 4.0 (Não-Comercial & Sem Treino Comercial de IA)",
+    "entityName": "articles",
+    "singularName": "Artigo",
+    "pluralName": "Artigos",
+    "primaryKey": "doi",
+    "secondaryKey": "id"
+  },
+  "schema": {
+    "searchFields": ["title", "abstract", "authors", "keywords", "section", "issue"],
+    "facets": [
+      { "key": "year", "label": "Ano / Edição", "type": "number", "multi": true },
+      { "key": "author", "label": "Autor / Pesquisador", "type": "string", "targetField": "authors" },
+      { "key": "section", "label": "Eixo Temático / Seção", "type": "string", "targetField": "section" },
+      { "key": "keyword", "label": "Palavra-chave / Tópico", "type": "string", "targetField": "keywords" }
+    ],
+    "sortFields": [
+      { "key": "year", "label": "Ano / Edição" },
+      { "key": "title", "label": "Título" },
+      { "key": "doi", "label": "DOI" }
+    ]
+  },
+  "stats": {
+    "topLists": [
+      { "key": "topAuthors", "label": "Principais Autores / Pesquisadores", "sourceField": "authors", "limit": 10 },
+      { "key": "topKeywords", "label": "Palavras-chave & Tópicos", "sourceField": "keywords", "limit": 10 },
+      { "key": "topSections", "label": "Eixos Temáticos / Seções", "sourceField": "section", "limit": 10 }
+    ],
+    "breakdowns": [
+      { "key": "yearDistribution", "label": "Distribuição por Ano / Edição", "sourceField": "year" },
+      { "key": "sectionBreakdown", "label": "Distribuição por Eixo Temático", "sourceField": "section" }
+    ]
+  }
+}

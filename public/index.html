@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRAN OpenData OS - Base de Dados Acadêmica & Eventos</title>
+  
+  <!-- Geist & Geist Mono Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER & TOP BAR -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon" id="header-logo-container">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="logo-text">
+          <h1 id="header-title"><span>BRAN</span> OpenData</h1>
+          <p id="header-subtitle">Acervo e Base de Dados Abertos</p>
+        </div>
+      </div>
+
+      <!-- Quick Search Bar in Top Header -->
+      <div class="top-search-container">
+        <i class="fa-solid fa-magnifying-glass top-search-icon"></i>
+        <input type="text" id="top-quick-search" class="top-search-input" placeholder="Buscar trabalhos, autores, tópicos...">
+      </div>
+      
+      <!-- Badges / External Links & Status Dot -->
+      <div class="header-badges">
+        <span class="badge-pill" title="Status da API REST">
+          <span class="status-dot"></span> API Online
+        </span>
+        <a href="#" id="badge-doi-link" class="badge-link" title="Acessar DOI" style="display: none;">
+          <span class="badge-pill" id="badge-doi-text"><i class="fa-solid fa-link"></i> DOI</span>
+        </a>
+        <a href="#" id="badge-zenodo-link" class="badge-link" title="Acervo Permanente no CERN/Zenodo" target="_blank" style="display: none;">
+          <span class="badge-pill" id="badge-zenodo-text" style="color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);"><i class="fa-solid fa-box-archive"></i> Zenodo</span>
+        </a>
+        <a href="https://github.com/BRAN-Org/bran-web-database-template" target="_blank" id="badge-github-link" class="badge-link" title="Repositório GitHub">
+          <span class="badge-pill"><i class="fa-brands fa-github"></i> GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- NAVIGATION TABS BAR -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="home-tab">
+        <i class="fa-solid fa-house"></i> <span>Início</span>
+      </button>
+      <button class="tab-btn" data-tab="dashboard-tab">
+        <i class="fa-solid fa-chart-line"></i> <span>Dashboard (Métricas)</span>
+      </button>
+      <button class="tab-btn" data-tab="explorer-tab" id="explorer-tab-btn">
+        <i class="fa-solid fa-magnifying-glass"></i> <span>Explorador de Dados</span>
+      </button>
+      <button class="tab-btn" data-tab="docs-tab">
+        <i class="fa-solid fa-code"></i> <span>Documentação da API</span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+
+      <!-- 0. TELA INICIAL (HOME TAB) -->
+      <section id="home-tab" class="tab-panel active">
+        
+        <!-- Hero Card Banner -->
+        <div class="hero-card glass-panel">
+          <div class="hero-header-row">
+            <span class="hero-badge"><span class="status-dot"></span> Open Data</span>
+            <span class="hero-badge secondary"><i class="fa-solid fa-atom"></i> FAIR & BOAI Open Access</span>
+          </div>
+
+          <h1 id="home-org-name" class="hero-title">BRAN Org</h1>
+          <h2 id="home-dataset-title" class="hero-subtitle">Base Aberta de Anais e Registros Científicos</h2>
+          
+          <div class="hero-description-box">
+            <p id="home-description-text">
+              Infraestrutura aberta de dados acadêmicos e científicos. Este portal disponibiliza acervos públicos de anais, edições e periódicos em formatos limpos e padronizados, com API REST pública e ferramentas para análise estatística no Brasil.
+            </p>
+          </div>
+        </div>
+
+        <!-- Zenodo Permanent Archival Banner -->
+        <div id="home-zenodo-card" class="glass-panel" style="margin-top: 1.5rem; padding: 1.5rem; border-color: rgba(59, 130, 246, 0.35); background: linear-gradient(135deg, rgba(30, 58, 138, 0.12), rgba(15, 23, 42, 0.4)); display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div style="flex: 1; min-width: 280px;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span class="badge-pill" style="border-color: rgba(59, 130, 246, 0.5); color: #93c5fd; font-size: 0.72rem; padding: 0.2rem 0.6rem;">
+                  <i class="fa-solid fa-shield-halved"></i> Preservação Permanente FAIR
+                </span>
+                <span class="badge-pill" style="border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7; font-size: 0.72rem; padding: 0.2rem 0.6rem;">
+                  <i class="fa-solid fa-database"></i> CERN / Zenodo
+                </span>
+              </div>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-box-archive" style="color: #60a5fa;"></i> Base de Dados Completa Preservada no Zenodo
+              </h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">
+                Todos os arquivos brutos desta base de dados acadêmica — incluindo o banco relacional completo <strong>SQLite3</strong> (<code>.sqlite</code> / <code>.db</code>), planilhas consolidadas <strong>CSV</strong>, exportações estruturadas <strong>JSON</strong>, metadados <strong>BibTeX/RIS</strong> e os <strong>PDFs originais em texto completo</strong> — estão preservados de forma imutável e com acesso aberto no Zenodo (CERN) sob DOI permanente registrado.
+              </p>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--text-secondary);">
+                <span class="badge-pill"><i class="fa-solid fa-database"></i> SQLite3 Relacional</span>
+                <span class="badge-pill"><i class="fa-solid fa-table"></i> CSV UTF-8 BOM</span>
+                <span class="badge-pill"><i class="fa-solid fa-file-pdf"></i> Textos Completos (PDF)</span>
+                <span class="badge-pill"><i class="fa-solid fa-quote-right"></i> BibTeX &amp; RIS</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem; align-self: center;">
+              <a href="#" id="home-zenodo-btn" target="_blank" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: #2563eb; border-color: #3b82f6; white-space: nowrap;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar no Zenodo
+              </a>
+              <div style="display: flex; align-items: center; gap: 0.4rem; justify-content: center;">
+                <code id="home-zenodo-doi-text" style="font-size: 0.76rem; color: #93c5fd; background: rgba(0,0,0,0.4); padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3);">DOI</code>
+                <button id="btn-copy-zenodo-doi" class="btn" style="padding: 0.25rem 0.55rem; font-size: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);" title="Copiar DOI do Zenodo">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlight Key Metrics Summary -->
+        <div class="stats-grid" style="margin-top: 1.5rem;">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-file-invoice"></i></div>
+            <div class="stat-info">
+              <h3>Total de Registros</h3>
+              <p class="stat-value" id="home-stat-total">-</p>
+            </div>
+            <div class="stat-footer">Trabalhos catalogados</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="stat-info">
+              <h3>Edições Catalogadas</h3>
+              <p class="stat-value" id="home-stat-years">-</p>
+            </div>
+            <div class="stat-footer">Anos cobertos pelo acervo</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="stat-info">
+              <h3>Eixos Temáticos</h3>
+              <p class="stat-value" id="home-stat-sections">-</p>
+            </div>
+            <div class="stat-footer">Seções e trilhas do evento</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+              <h3>Pesquisadores</h3>
+              <p class="stat-value" id="home-stat-authors">-</p>
+            </div>
+            <div class="stat-footer">Autores catalogados</div>
+          </div>
+        </div>
+
+        <!-- Feature Highlights Grid -->
+        <div class="features-grid">
+          <div class="feature-card glass-panel">
+            <div class="feature-icon"><i class="fa-solid fa-unlock-keyhole"></i></div>
+            <h3>Dados Abertos e Transparência</h3>
+            <p>Acesso gratuito e sem necessidade de autenticação aos metadados do acervo, garantindo reprodutibilidade científica e transparência institucional.</p>
+          </div>
+
+          <div class="feature-card glass-panel">
+            <div class="feature-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <h3>API REST & Exportação Dual</h3>
+            <p>Consuma via endpoints JSON estruturados ou realize exportação dos dados filtrados diretamente nos formatos JSON e CSV com acentuação UTF-8 BOM.</p>
+          </div>
+
+          <div class="feature-card glass-panel">
+            <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
+            <h3>Métricas & Gráficos Universais</h3>
+            <p>Gráficos vetoriais interativos em SVG de evolução histórica, distribuição por eixos temáticos, ranking de autores e palavras-chave mais citadas.</p>
+          </div>
+        </div>
+
+        <!-- Como Citar este Dataset / Base de Dados -->
+        <div id="home-citation-card" class="glass-panel" style="margin-top: 1.5rem; padding: 1.5rem; display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-quote-left" style="color: var(--accent-emerald);"></i> Como Citar esta Base de Dados (Zenodo DOI)
+              </h3>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
+                Ao utilizar estes dados em pesquisas acadêmicas, relatórios ou teses, cite o acervo completo pelo DOI permanente do Zenodo:
+              </p>
+            </div>
+            <div class="citation-tabs" style="margin-bottom: 0;">
+              <button class="dataset-citation-tab active" data-fmt="bibtex">BibTeX</button>
+              <button class="dataset-citation-tab" data-fmt="apa">APA 7th</button>
+              <button class="dataset-citation-tab" data-fmt="abnt">ABNT</button>
+            </div>
+          </div>
+          <div class="citation-box">
+            <button class="copy-btn" id="btn-copy-dataset-citation"><i class="fa-regular fa-copy"></i> Copiar Citação do Dataset</button>
+            <pre><code id="dataset-citation-content"></code></pre>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 1. DASHBOARD COMPLETO (4 GRÁFICOS UNIVERSIAS E ESSENCIAIS) -->
+      <section id="dashboard-tab" class="tab-panel">
+        <!-- Key Stats Cards Consolidados -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-file-invoice"></i></div>
+            <div class="stat-info">
+              <h3>Total de Trabalhos</h3>
+              <div class="stat-card-row">
+                <p class="stat-value" id="stat-total-articles">-</p>
+                <div class="stat-sparkline" id="sparkline-total"></div>
+              </div>
+            </div>
+            <div class="stat-footer">Publicações no acervo</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="stat-info">
+              <h3>Edições Catalogadas</h3>
+              <div class="stat-card-row">
+                <p class="stat-value" id="stat-unique-years">-</p>
+                <div class="stat-sparkline" id="sparkline-years"></div>
+              </div>
+            </div>
+            <div class="stat-footer">Anos cobertos pelo evento</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="stat-info">
+              <h3>Eixos Temáticos</h3>
+              <div class="stat-card-row">
+                <p class="stat-value" id="stat-unique-sections">-</p>
+                <div class="stat-sparkline" id="sparkline-sections"></div>
+              </div>
+            </div>
+            <div class="stat-footer">Seções e categorias</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+              <h3>Pesquisadores</h3>
+              <div class="stat-card-row">
+                <p class="stat-value" id="stat-unique-authors">-</p>
+                <div class="stat-sparkline" id="sparkline-authors"></div>
+              </div>
+            </div>
+            <div class="stat-footer">Autores catalogados</div>
+          </div>
+        </div>
+
+        <!-- Charts Customizer Toolbar -->
+        <div class="charts-toolbar glass-panel">
+          <div class="toolbar-title">
+            <i class="fa-solid fa-sliders"></i> <span>Personalizar Visualização</span>
+          </div>
+          <div class="toolbar-controls">
+            <div class="toolbar-control">
+              <label for="chart-theme-select"><i class="fa-solid fa-palette"></i> <span>Paleta:</span></label>
+              <select id="chart-theme-select" class="toolbar-select">
+                <option value="tokyonight" selected>Tokyo Night OS (Reativo)</option>
+                <option value="cyberpunk">Cyberpunk Neon</option>
+                <option value="glass">Glassmorphism Emerald</option>
+                <option value="default">Indigo Slate Clean</option>
+                <option value="paper">Paper Minimalist (Claro)</option>
+                <option value="terminal">Terminal Hacker (Verde)</option>
+              </select>
+            </div>
+            
+            <div class="toolbar-control">
+              <label for="chart-type-select"><i class="fa-solid fa-chart-bar"></i> <span>Tipo de Gráfico:</span></label>
+              <select id="chart-type-select" class="toolbar-select">
+                <option value="auto" selected>Automático (Tipos Ideais)</option>
+                <option value="bar">Forçar Todos em Barras</option>
+                <option value="line">Forçar Todos em Linhas</option>
+                <option value="donut">Forçar Todos em Rosca</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Universal Essential Charts Grid -->
+        <div class="charts-grid">
+          <!-- Chart 1: Evolution over Years -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-calendar-days"></i> <span>Publicações por Edição (Histórico)</span></h3>
+              <div class="chart-export-group">
+                <button class="btn-chart-export" data-chart="years" data-format="svg" title="Exportar Vetor SVG"><i class="fa-solid fa-file-code"></i> SVG</button>
+                <button class="btn-chart-export" data-chart="years" data-format="png" title="Exportar Imagem PNG"><i class="fa-solid fa-download"></i> PNG</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div id="chart-years" class="chart-svg-wrapper"></div>
+            </div>
+          </div>
+          
+          <!-- Chart 2: Section Breakdown -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-layer-group"></i> <span>Distribuição por Eixo Temático / Seção</span></h3>
+              <div class="chart-export-group">
+                <button class="btn-chart-export" data-chart="sections" data-format="svg" title="Exportar Vetor SVG"><i class="fa-solid fa-file-code"></i> SVG</button>
+                <button class="btn-chart-export" data-chart="sections" data-format="png" title="Exportar Imagem PNG"><i class="fa-solid fa-download"></i> PNG</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div id="chart-sections" class="chart-svg-wrapper"></div>
+            </div>
+          </div>
+
+          <!-- Chart 3: Top Authors -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-users"></i> <span>Principais Autores / Pesquisadores</span></h3>
+              <div class="chart-export-group">
+                <button class="btn-chart-export" data-chart="authors" data-format="svg" title="Exportar Vetor SVG"><i class="fa-solid fa-file-code"></i> SVG</button>
+                <button class="btn-chart-export" data-chart="authors" data-format="png" title="Exportar Imagem PNG"><i class="fa-solid fa-download"></i> PNG</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div id="chart-authors" class="chart-svg-wrapper"></div>
+            </div>
+          </div>
+
+          <!-- Chart 4: Top Keywords / Topics -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3><i class="fa-solid fa-tags"></i> <span>Palavras-chave & Tópicos em Alta</span></h3>
+              <div class="chart-export-group">
+                <button class="btn-chart-export" data-chart="keywords" data-format="svg" title="Exportar Vetor SVG"><i class="fa-solid fa-file-code"></i> SVG</button>
+                <button class="btn-chart-export" data-chart="keywords" data-format="png" title="Exportar Imagem PNG"><i class="fa-solid fa-download"></i> PNG</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div id="chart-keywords" class="chart-svg-wrapper"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. DATA EXPLORER TAB -->
+      <section id="explorer-tab" class="tab-panel">
+        <div class="explorer-layout">
+          
+          <!-- Sidebar Filters -->
+          <div class="filters-sidebar glass-panel">
+            <div class="filter-group-header">
+              <i class="fa-solid fa-filter"></i> <span>Filtros do Acervo</span>
+              <button class="btn-clear" id="btn-clear-filters" title="Limpar Filtros"><i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+
+            <div class="filter-section">
+              <label><i class="fa-solid fa-magnifying-glass"></i> Busca Textual Global</label>
+              <input type="text" id="search-input" class="filter-input" placeholder="Título, resumo, autor...">
+            </div>
+
+            <div class="filter-section">
+              <label><i class="fa-solid fa-calendar"></i> Edições (Ano)</label>
+              <div class="checkbox-group" id="year-checkbox-list">
+                <!-- Populado via JS -->
+              </div>
+            </div>
+
+            <div class="filter-section" id="filter-tool-group" style="display: none;">
+              <label><i class="fa-solid fa-wrench"></i> Filtrar por Ferramenta</label>
+              <select id="filter-tool" class="filter-select">
+                <option value="">Todas as ferramentas</option>
+              </select>
+            </div>
+
+            <div class="filter-section" id="filter-source-group" style="display: none;">
+              <label><i class="fa-solid fa-database"></i> Fonte de Coleta de Dados</label>
+              <select id="filter-source" class="filter-select">
+                <option value="">Todas as fontes</option>
+              </select>
+            </div>
+
+            <div class="filter-section" id="filter-stage-group" style="display: none;">
+              <label><i class="fa-solid fa-diagram-project"></i> Etapa Metodológica</label>
+              <select id="filter-stage" class="filter-select">
+                <option value="">Qualquer etapa</option>
+              </select>
+            </div>
+
+            <div class="filter-section" id="filter-has-tools-group" style="display: none;">
+              <label class="checkbox-item" style="cursor: pointer; font-size: 13px;">
+                <input type="checkbox" id="filter-has-tools">
+                <span>Apenas artigos que usam ferramentas</span>
+              </label>
+            </div>
+
+            <div class="filter-section" id="filter-keyword-group" style="display: none;">
+              <label><i class="fa-solid fa-tags"></i> Palavra-chave / Tópico</label>
+              <select id="filter-keyword" class="filter-select">
+                <option value="">Todas as palavras-chave</option>
+              </select>
+            </div>
+
+            <div class="filter-section" id="filter-author-group">
+              <label><i class="fa-solid fa-user"></i> Autor / Pesquisador</label>
+              <select id="filter-author" class="filter-select">
+                <option value="">Todos os autores</option>
+              </select>
+            </div>
+
+            <div class="filter-section" id="filter-section-group">
+              <label><i class="fa-solid fa-layer-group"></i> Eixo Temático / Seção</label>
+              <select id="filter-section" class="filter-select">
+                <option value="">Todos os eixos</option>
+              </select>
+            </div>
+
+            <div class="filter-section" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+              <label><i class="fa-solid fa-download"></i> Exportar Dados Filtrados</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.4rem;">
+                <a href="/api/v1/articles/export?format=json" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-json" style="text-align:center; text-decoration:none;"><i class="fa-solid fa-code"></i> JSON</a>
+                <a href="/api/v1/articles/export?format=csv" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-csv" style="text-align:center; text-decoration:none;"><i class="fa-solid fa-file-csv"></i> CSV</a>
+                <a href="/api/v1/articles/export?format=bibtex" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-bibtex" style="text-align:center; text-decoration:none;" title="Formato BibTeX para LaTeX e Zotero"><i class="fa-solid fa-book-bookmark"></i> BibTeX</a>
+                <a href="/api/v1/articles/export?format=ris" target="_blank" class="btn btn-secondary btn-sm" id="btn-export-ris" style="text-align:center; text-decoration:none;" title="Formato RIS para VOSviewer, Mendeley e EndNote"><i class="fa-solid fa-diagram-project"></i> RIS</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Results Table / Cards -->
+          <div class="explorer-results">
+            <!-- Controls Bar -->
+            <div class="results-toolbar glass-panel">
+              <div class="toolbar-left">
+                <label for="sort-select"><i class="fa-solid fa-arrow-down-short-wide"></i> Ordenar:</label>
+                <select id="sort-select" class="filter-select">
+                  <option value="year">Ano de Edição</option>
+                  <option value="title">Título do Trabalho</option>
+                  <option value="doi">DOI / ID</option>
+                </select>
+                <button class="btn-icon" id="btn-sort-dir" title="Inverter Ordem"><i class="fa-solid fa-sort-amount-down"></i></button>
+              </div>
+
+              <div class="toolbar-right">
+                <span class="results-count-text">
+                  Mostrando <span id="displayed-count">0</span> de <span id="filtered-count">0</span> trabalhos
+                </span>
+                <div class="pagination-controls">
+                  <button id="btn-prev" class="btn-icon" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                  <span id="page-indicator">Pág. 1 de 1</span>
+                  <button id="btn-next" class="btn-icon" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Articles List Container -->
+            <div class="articles-list" id="articles-list">
+              <!-- Cartões populados via JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 3. DOCS & API SANDBOX TAB -->
+      <section id="docs-tab" class="tab-panel">
+        <div class="sandbox-card glass-panel" style="margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2><i class="fa-solid fa-terminal"></i> Interactive REST API Playground</h2>
+              <p class="sandbox-desc">
+                Execute chamadas HTTP diretamente pelo navegador, meça o tempo de resposta em milissegundos e obtenha o payload JSON em tempo real.
+              </p>
+            </div>
+            <div id="playground-status-badge" class="playground-status">
+              <i class="fa-solid fa-circle-check"></i> HTTP 200 OK (0ms)
+            </div>
+          </div>
+
+          <div class="sandbox-controls" style="margin-top: 1.25rem;">
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%;">
+              <span class="badge-method get">GET</span>
+              <select id="playground-endpoint-select" class="filter-select" style="font-family: var(--font-mono); font-weight: 600; flex: 1; min-width: 260px;">
+                <option value="/api/v1/articles?limit=5">GET /api/v1/articles?limit=5 (Listagem Paginada)</option>
+                <option value="/api/v1/articles/stats">GET /api/v1/articles/stats (Estatísticas Consolidadas)</option>
+                <option value="/api/v1/config">GET /api/v1/config (Configuração do Dataset)</option>
+              </select>
+              <button class="btn btn-primary" id="btn-execute-api">
+                <i class="fa-solid fa-play"></i> Executar Requisição
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; margin-bottom: 0.5rem;">
+            <div class="sandbox-controls" style="margin: 0;">
+              <label for="sandbox-lang">Gerar Snippet em:</label>
+              <select id="sandbox-lang" class="filter-select">
+                <option value="curl">cURL (Terminal / Shell)</option>
+                <option value="javascript">JavaScript (Fetch API)</option>
+                <option value="python">Python (Requests)</option>
+                <option value="node">Node.js (Axios)</option>
+                <option value="r">R (httr & jsonlite)</option>
+              </select>
+            </div>
+            <button class="copy-btn" id="sandbox-copy-btn"><i class="fa-regular fa-copy"></i> Copiar Código</button>
+          </div>
+
+          <div class="code-box">
+            <pre><code id="sandbox-code">// Clique em 'Executar Requisição' para carregar a resposta JSON...</code></pre>
+          </div>
+        </div>
+
+        <!-- Documentação Detalhada com Menu Lateral -->
+        <div class="docs-layout">
+          <div class="docs-sidebar glass-panel">
+            <h3><i class="fa-solid fa-book-bookmark"></i> Endpoints & Guias</h3>
+            <ul class="docs-menu-list">
+              <li><a href="#" class="docs-menu-link active" data-doc="doc-articles"><span class="badge-method get">GET</span> <span>/articles</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-article-key"><span class="badge-method get">GET</span> <span>/articles/:key</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-stats"><span class="badge-method get">GET</span> <span>/articles/stats</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-export"><span class="badge-method get">GET</span> <span>/export</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-config"><span class="badge-method get">GET</span> <span>/config</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-zenodo"><span class="badge-method get" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">FAIR</span> <span>/zenodo</span></a></li>
+            </ul>
+          </div>
+
+          <div class="docs-main-container">
+            <!-- Doc 1: Articles List -->
+            <div class="doc-card glass-panel active" id="doc-articles">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles</span>
+              </div>
+              <p class="doc-intro">Retorna a lista paginada de trabalhos com suporte a múltiplos filtros, ordenação flexível e busca textual global.</p>
+            </div>
+
+            <!-- Doc 2: Article By Key -->
+            <div class="doc-card glass-panel" id="doc-article-key">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/:key</span>
+              </div>
+              <p class="doc-intro">Busca individual por DOI ou identificador primário do registro (ex: <code>10.5281/zenodo.123456</code>).</p>
+            </div>
+
+            <!-- Doc 3: Stats -->
+            <div class="doc-card glass-panel" id="doc-stats">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats</span>
+              </div>
+              <p class="doc-intro">Retorna agregados consolidados, distribuições históricas por ano, top autores, seções e palavras-chave.</p>
+            </div>
+
+            <!-- Doc 5: Export -->
+            <div class="doc-card glass-panel" id="doc-export">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/export</span>
+              </div>
+              <p class="doc-intro">Exporta o dataset completo ou filtrado nos formatos <code>JSON</code>, <code>CSV</code> (com BOM UTF-8 para Excel), <code>BibTeX</code> (<code>.bib</code> para LaTeX/Zotero) ou <code>RIS</code> (para VOSviewer, Mendeley e bibliometrix).</p>
+            </div>
+
+            <!-- Doc 6: Config -->
+            <div class="doc-card glass-panel" id="doc-config">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/config</span>
+              </div>
+              <p class="doc-intro">Retorna a configuração pública do dataset, metadados da instituição, facetas e esquemas de busca.</p>
+            </div>
+
+            <!-- Doc 7: Zenodo FAIR Archive & Raw Data -->
+            <div class="doc-card glass-panel" id="doc-zenodo">
+              <div class="endpoint-header">
+                <span class="badge-method get" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">FAIR DATA</span>
+                <span class="endpoint-path">CERN Zenodo Archive &amp; Full Raw Data</span>
+              </div>
+              <p class="doc-intro">Preservação permanente e imutável de todos os artefatos originais e brutos da base no repositório CERN/Zenodo sob DOI permanente registrado.</p>
+              <div class="doc-details" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                <p>O pacote completo arquivado no Zenodo inclui:</p>
+                <ul style="margin: 0.5rem 0 1rem 1.5rem;">
+                  <li><strong>SQLite3 (banco relacional completo):</strong> esquema normalizado com todas as tabelas e índices para consultas analíticas SQL diretas offline.</li>
+                  <li><strong>CSV consolidado (UTF-8 com BOM):</strong> compatível imediatamente com Microsoft Excel, LibreOffice Calc, SPSS, R e Python (pandas).</li>
+                  <li><strong>JSON estruturado:</strong> exportação bruta do catálogo em lote para ingestão em pipelines de dados e NoSQL.</li>
+                  <li><strong>Textos completos em PDF:</strong> cópias digitais íntegras de todos os artigos do acervo para mineração textual (text mining) e NLP acadêmico.</li>
+                </ul>
+                <div style="margin-top: 1rem;">
+                  <a href="#" id="doc-zenodo-btn" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Acervo Completo no Zenodo
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          &copy; 2026 <strong id="footer-org-name">BRAN Org</strong> <span id="footer-inst-name">(Brazilian Research Archive Network)</span>
+        </div>
+        <div class="footer-right">
+          <a href="https://github.com/BRAN-Org/bran-web-database-template/issues" target="_blank" id="footer-issues-link">
+            <i class="fa-solid fa-circle-exclamation"></i> Dúvidas / Issues?
+          </a>
+          <a href="https://github.com/BRAN-Org/bran-web-database-template" target="_blank" id="footer-github-link">
+            <i class="fa-brands fa-github"></i> GitHub
+          </a>
+          <a href="#" id="footer-doi-link" target="_blank" style="display: none;">
+            <i class="fa-solid fa-link"></i> DOI
+          </a>
+          <a href="#" id="footer-zenodo-link" target="_blank" style="display: none;">
+            <i class="fa-solid fa-box-archive"></i> Zenodo
+          </a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ARTICLE DETAIL MODAL -->
+  <div class="modal-overlay" id="article-modal">
+    <div class="modal-content glass-panel">
+      <button class="modal-close" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+      
+      <span class="badge-year" id="modal-year">2024</span>
+      <h2 class="modal-title" id="modal-title">Título do Trabalho</h2>
+      <p class="modal-authors" id="modal-authors">Autores</p>
+
+      <div class="modal-section">
+        <h4><i class="fa-solid fa-align-left"></i> Resumo (Abstract)</h4>
+        <p id="modal-abstract" class="abstract-text">Resumo não disponível.</p>
+      </div>
+
+      <!-- Grid de Metadados Curados -->
+      <div class="modal-meta-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <div class="modal-section" id="modal-tools-group">
+          <h4><i class="fa-solid fa-wrench"></i> Ferramentas Utilizadas</h4>
+          <div id="modal-tools" class="badge-list">Nenhuma ferramenta detectada</div>
+        </div>
+
+        <div class="modal-section" id="modal-sources-group">
+          <h4><i class="fa-solid fa-database"></i> Fontes de Coleta de Dados</h4>
+          <div id="modal-sources" class="badge-list">Nenhuma fonte especificada</div>
+        </div>
+
+        <div class="modal-section" id="modal-stages-group">
+          <h4><i class="fa-solid fa-diagram-project"></i> Etapas Metodológicas de Uso</h4>
+          <div id="modal-stages" class="badge-list">Não especificado</div>
+        </div>
+
+        <div class="modal-section" id="modal-sections-group">
+          <h4><i class="fa-solid fa-layer-group"></i> Eixo Temático / Seção</h4>
+          <div id="modal-sections" class="badge-list">Não especificado</div>
+        </div>
+      </div>
+
+      <div class="modal-section" id="modal-keywords-group">
+        <h4><i class="fa-solid fa-tags"></i> Palavras-chave</h4>
+        <div id="modal-keywords" class="badge-list">Não especificado</div>
+      </div>
+
+      <!-- Gerador de Citações Científicas -->
+      <div class="modal-section citation-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <h4 style="margin: 0;"><i class="fa-solid fa-quote-left"></i> Citar este Trabalho</h4>
+          <div style="display: flex; gap: 0.35rem; font-size: 0.75rem;">
+            <button class="citation-mode-btn active" id="btn-cite-mode-item" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 8px; color: var(--text-primary); cursor: pointer;">Artigo</button>
+            <button class="citation-mode-btn" id="btn-cite-mode-dataset" style="background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2px 8px; color: var(--text-secondary); cursor: pointer;">Base (Zenodo)</button>
+          </div>
+        </div>
+        <div class="citation-tabs">
+          <button class="citation-tab active" data-fmt="bibtex">BibTeX</button>
+          <button class="citation-tab" data-fmt="apa">APA 7th</button>
+          <button class="citation-tab" data-fmt="abnt">ABNT</button>
+        </div>
+        <div class="citation-box">
+          <button class="copy-btn" id="btn-copy-citation"><i class="fa-regular fa-copy"></i> Copiar Citação</button>
+          <pre><code id="citation-content"></code></pre>
+        </div>
+        <div id="modal-zenodo-archive-note" style="margin-top: 0.5rem; font-size: 0.76rem; color: var(--text-secondary); display: none;">
+          <i class="fa-solid fa-box-archive" style="color: #60a5fa;"></i> Dados brutos, SQLite3 e textos completos preservados no Zenodo: <a href="#" id="modal-zenodo-archive-link" target="_blank" style="color: #93c5fd; text-decoration: underline;"></a>
+        </div>
+      </div>
+
+      <div class="modal-section" style="margin-top: 24px; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <div id="modal-doi-text-container" style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">
+          <!-- Ex: DOI: https://doi.org/10.22477/ix.ebbc.260 -->
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <a href="#" id="modal-doi-link" target="_blank" class="btn btn-primary" style="display: inline-block; text-decoration: none;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar Publicação
+          </a>
+          <a href="#" id="modal-pdf-link" target="_blank" class="btn btn-secondary" style="display: none; text-decoration: none; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+            <i class="fa-solid fa-file-pdf"></i> Baixar PDF
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

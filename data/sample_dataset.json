@@ -1,0 +1,62 @@
+[
+  {
+    "id": "item-001",
+    "doi": "https://doi.org/10.5281/zenodo.1000001",
+    "url": "https://doi.org/10.5281/zenodo.1000001",
+    "pdf_url": "https://zenodo.org/records/1000001/files/artigo.pdf",
+    "year": 2024,
+    "title": "Mapeamento Bibliométrico da Produção Científica Brasileira em IA",
+    "authors": ["Gabriel Nascimento Gama", "Maria Silva", "João Santos"],
+    "keywords": ["Bibliometria", "Inteligência Artificial", "Ciência Aberta"],
+    "abstract": "Estudo bibliométrico analisando a evolução das publicações científicas sobre IA no Brasil de 2018 a 2024 utilizando dados abertos.",
+    "tools": ["VOSviewer", "Python", "R"],
+    "data_sources": ["OpenAlex", "Scopus"],
+    "usage_stages": ["coleta de dados", "análise dos dados", "visualização"],
+    "identifies_tool": "Sim"
+  },
+  {
+    "id": "item-002",
+    "doi": "https://doi.org/10.5281/zenodo.1000002",
+    "url": "https://doi.org/10.5281/zenodo.1000002",
+    "pdf_url": "https://zenodo.org/records/1000002/files/artigo.pdf",
+    "year": 2024,
+    "title": "Análise de Redes de Coautoria na Cientometria Nacional",
+    "authors": ["Ana Oliveira", "Gabriel Nascimento Gama"],
+    "keywords": ["Cientometria", "Redes Sociais", "Gephi"],
+    "abstract": "Investigação sobre redes de colaboração acadêmica entre programas de pós-graduação brasileiros.",
+    "tools": ["Gephi", "Python"],
+    "data_sources": ["Plataforma Lattes", "Web of Science"],
+    "usage_stages": ["coleta de dados", "análise dos dados"],
+    "identifies_tool": "Sim"
+  },
+  {
+    "id": "item-003",
+    "doi": "https://doi.org/10.5281/zenodo.1000003",
+    "url": "https://doi.org/10.5281/zenodo.1000003",
+    "pdf_url": "https://zenodo.org/records/1000003/files/artigo.pdf",
+    "year": 2022,
+    "title": "Adoção de Software Livre na Pesquisa Científica Brasileira",
+    "authors": ["Carlos Eduardo", "Fernanda Lima"],
+    "keywords": ["Software Livre", "Ciência Aberta", "R"],
+    "abstract": "Levantamento quantitativo sobre a utilização do pacote Bibliometrix em artigos de cientometria.",
+    "tools": ["Bibliometrix", "R"],
+    "data_sources": ["BRAPCI", "Dimensions"],
+    "usage_stages": ["análise dos dados", "visualização"],
+    "identifies_tool": "Sim"
+  },
+  {
+    "id": "item-004",
+    "doi": "https://doi.org/10.5281/zenodo.1000004",
+    "url": "https://doi.org/10.5281/zenodo.1000004",
+    "pdf_url": "https://zenodo.org/records/1000004/files/artigo.pdf",
+    "year": 2020,
+    "title": "Indicadores Cientométricos do Acesso Aberto no Brasil",
+    "authors": ["Beatriz Rocha", "Maria Silva"],
+    "keywords": ["Acesso Aberto", "BOAI", "FAIR"],
+    "abstract": "Análise diagnóstica dos repositórios institucionais brasileiros e adesão aos princípios FAIR.",
+    "tools": ["Excel", "Python"],
+    "data_sources": ["Plataforma Sucupira", "Google Scholar"],
+    "usage_stages": ["coleta de dados"],
+    "identifies_tool": "Não"
+  }
+]

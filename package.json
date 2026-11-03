@@ -1,0 +1,34 @@
+{
+  "name": "bran-web-database-template",
+  "version": "1.5.0",
+  "description": "Template leve e reproduzível para APIs REST públicas e Dashboards de bases de dados acadêmicas da BRAN Org.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "start:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node server.js",
+    "dev:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node --watch server.js",
+    "data:ebbc": "DATASET_DIR=mock/ebbc/data CONFIG_PATH=mock/ebbc/dataset.config.json node scripts/validate_dataset.js",
+    "test": "NODE_ENV=test node --test tests/unit.test.js tests/api.test.js",
+    "data:convert": "node scripts/convert_csv_to_json.js",
+    "data:validate": "node scripts/validate_dataset.js",
+    "data:audit": "python3 scripts/crona_audit_engine.py --file data/*.json --schema schemas/article.v1.schema.json",
+    "data:bundle": "python3 scripts/crona_zenodo_sync.py",
+    "init:event": "node scripts/init_event.js"
+  },
+  "keywords": [
+    "open-data",
+    "bran-org",
+    "api",
+    "academic-data",
+    "database-template",
+    "express"
+  ],
+  "author": "BRAN Org",
+  "license": "GPL-3.0-or-later AND CC-BY-NC-SA-4.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.0.0"
+  }
+}

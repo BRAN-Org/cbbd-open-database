@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/BRAN-Org/schemas/main/schemas/article.v1.schema.json",
+  "title": "BRAN Org Academic Article & Proceeding Schema",
+  "description": "Especificação de dados para artigos acadêmicos, trabalhos de congressos e anais resgatados pela BRAN Org.",
+  "oneOf": [
+    { "$ref": "#/$defs/article" },
+    {
+      "type": "array",
+      "items": { "$ref": "#/$defs/article" }
+    }
+  ],
+  "$defs": {
+    "article": {
+      "type": "object",
+      "required": [
+        "title",
+        "authors"
+      ],
+      "anyOf": [
+        { "required": ["id"] },
+        { "required": ["doi"] }
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Identificador único do artigo no acervo (ex: DOI, slug ou UUID)."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Título oficial completo do artigo ou trabalho acadêmico."
+        },
+        "authors": {
+          "type": "array",
+          "description": "Lista de autores do trabalho.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Nome completo do autor em formato texto simples."
+              },
+              {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome completo do autor."
+                  },
+                  "orcid": {
+                    "type": ["string", "null"],
+                    "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]$",
+                    "description": "Identificador ORCID validado do pesquisador (ex: https://orcid.org/0000-0002-1825-0097)."
+                  },
+                  "affiliation": {
+                    "type": ["string", "null"],
+                    "description": "Instituição de ensino/pesquisa do autor no momento da publicação."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "abstract": {
+          "type": ["string", "null"],
+          "description": "Resumo completo do artigo original. Registrado como null se ausente na fonte."
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1800,
+          "maximum": 2030,
+          "description": "Ano de publicação ou edição do evento científico."
+        },
+        "publication_year": {
+          "type": "integer",
+          "minimum": 1800,
+          "maximum": 2030,
+          "description": "Ano oficial de publicação do trabalho acadêmico."
+        },
+        "doi": {
+          "type": ["string", "null"],
+          "pattern": "^(https?://(dx\\.)?doi\\.org/)?10\\.\\d{4,9}/[-._;()/:,A-Za-z0-9]+$|^N/A$",
+          "description": "Digital Object Identifier (DOI) oficial do artigo ou link persistente."
+        },
+        "pdf_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL direta para o download do arquivo PDF original."
+        },
+        "url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL da página de apresentação do artigo no portal oficial."
+        },
+        "event_name": {
+          "type": ["string", "null"],
+          "description": "Nome do evento ou congresso acadêmico no qual o trabalho foi apresentado."
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Palavras-chave registradas pelos autores."
+        },
+        "affiliations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Afiliações institucionais dos autores."
+        },
+        "tools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Softwares, bibliotecas ou ferramentas computacionais empregadas na pesquisa."
+        },
+        "data_sources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fontes de dados, portais ou bases bibliométricas consultadas."
+        },
+        "usage_stages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Etapas metodológicas mapeadas na pesquisa."
+        },
+        "provenance": {
+          "type": "object",
+          "description": "Metadados detalhados de proveniência e integridade na fonte primária.",
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "Nome ou identificador da fonte primária dos dados."
+            },
+            "source_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL de origem direta do registro no sistema oficial."
+            },
+            "collected_at": {
+              "type": "string",
+              "description": "Data ISO-8601 da captura do registro."
+            },
+            "raw_file_sha256": {
+              "type": ["string", "null"],
+              "pattern": "^[a-fA-F0-9]{64}$",
+              "description": "Hash SHA-256 do arquivo original capturado."
+            },
+            "archive_url": {
+              "type": ["string", "null"],
+              "format": "uri",
+              "description": "Link de snapshot ou preservação perpétua (ex: Wayback Machine)."
+            },
+            "notes": {
+              "type": ["string", "null"],
+              "description": "Observações sobre o estado do registro na fonte."
+            }
+          }
+        },
+        "validation": {
+          "type": "object",
+          "description": "Resultados de auditoria e validação externa independente do registro.",
+          "properties": {
+            "source_fidelity": {
+              "type": "boolean",
+              "description": "Indica se os metadados reproduzem fielmente a fonte oficial."
+            },
+            "doi_status": {
+              "type": "string",
+              "enum": [
+                "valid_resolves",
+                "unresolvable_404",
+                "metadata_mismatch",
+                "missing_in_source",
+                "corrected",
+                "not_checked"
+              ],
+              "description": "Status da auditoria de resolução e consistência do DOI."
+            },
+            "doi_resolves": {
+              "type": ["boolean", "null"],
+              "description": "Se o identificador DOI resolve com sucesso via HTTP no resolvedor oficial."
+            },
+            "crossref_match": {
+              "type": ["boolean", "null"],
+              "description": "Se os metadados foram validados na API do Crossref."
+            },
+            "openalex_match": {
+              "type": ["boolean", "null"],
+              "description": "Se o registro foi localizado e validado no OpenAlex."
+            },
+            "title_match_score": {
+              "type": ["number", "null"],
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "Grau de similaridade (0.0 a 1.0) entre o título da fonte e o metadado no Crossref."
+            },
+            "authors_match": {
+              "type": ["boolean", "null"],
+              "description": "Se a autoria confere com a base externa independente."
+            },
+            "audit_date": {
+              "type": "string",
+              "description": "Data ISO-8601 da última execução de auditoria."
+            },
+            "audit_method": {
+              "type": "string",
+              "enum": ["automated", "manual", "hybrid"],
+              "description": "Método empregado na validação deste registro."
+            }
+          }
+        },
+        "corrections": {
+          "type": "array",
+          "description": "Histórico de correções rastreáveis preservando a divergência original da fonte.",
+          "items": {
+            "type": "object",
+            "required": ["field", "source_value", "verified_value", "correction_source"],
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Nome do campo corrigido (ex: 'doi', 'title', 'year', 'authors')."
+              },
+              "source_value": {
+                "description": "Valor exato presente originalmente na fonte primária."
+              },
+              "verified_value": {
+                "description": "Valor verificado e corrigido na base curada."
+              },
+              "correction_source": {
+                "type": "string",
+                "description": "Fonte de evidência externa que fundamentou a correção (ex: Crossref, DataCite, PDF)."
+              },
+              "correction_reason": {
+                "type": ["string", "null"],
+                "description": "Justificativa detalhada da correção."
+              },
+              "corrected_at": {
+                "type": "string",
+                "description": "Data ISO-8601 em que a correção foi documentada."
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
