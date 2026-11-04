@@ -4,7 +4,7 @@
   "scraped_at": "2026-11-03T10:23:31.335509+00:00",
   "extractor_name": "cbbd_scientific_harvester_v1",
   "extractor_version": "1.0.0",
-  "raw_data_sha256": "0122edcd55233a2cbb9fa97962f387cb7a8056ae399b1549936aa719bfb41e09",
+  "raw_data_sha256": "b9afa2a6dda1465d2de7a6c42556aaa96c653c51f07b1ff000135219ea06e988",
   "health_level": "HIGH_FIDELITY",
   "total_records": 3385,
   "missing_doi_count": 3385,
@@ -23,7 +23,7 @@
     "PERMALINK_URI": 0,
     "ORPHAN_UNIDENTIFIED": 0
   },
-  "last_audit_at": "2026-11-03T13:27:45.457138+00:00",
+  "last_audit_at": "2026-11-04T01:31:18.499137+00:00",
   "audit_history": [
     {
       "timestamp": "2026-11-03T10:25:54.107200+00:00",
@@ -132,6 +132,27 @@
     },
     {
       "timestamp": "2026-11-03T13:27:45.457138+00:00",
+      "auditor": "crona-bot[bot]",
+      "total_records": 3385,
+      "total_checked": 0,
+      "valid_count": 0,
+      "broken_count": 0,
+      "resolution_rate": 1.0,
+      "global_identification_rate": 1.0,
+      "identifiers_breakdown": {
+        "DOI_RESOLVED": 0,
+        "DOI_UNRESOLVED": 0,
+        "OJS_INTERNAL_ID": 0,
+        "CANONICAL_SLUG": 3385,
+        "HANDLE_SYSTEM": 0,
+        "UUID_IDENTIFIER": 0,
+        "CONTENT_HASH": 0,
+        "PERMALINK_URI": 0,
+        "ORPHAN_UNIDENTIFIED": 0
+      }
+    },
+    {
+      "timestamp": "2026-11-04T01:31:18.499137+00:00",
       "auditor": "crona-bot[bot]",
       "total_records": 3385,
       "total_checked": 0,
