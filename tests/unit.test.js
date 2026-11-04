@@ -8,7 +8,7 @@ import {
   calculateScatterData, 
   calculateParetoData 
 } from '../src/statsEngine.js';
-import { getDoiStatus, generateDatasetCitation } from '../public/js/app.js';
+import { getDoiStatus, resolveArticleUrl, generateDatasetCitation } from '../public/js/app.js';
 
 describe('Unit Tests - DataManager & StatsEngine', () => {
   test('normalizeString deve remover acentos e converter para caixa baixa', () => {
@@ -92,6 +92,21 @@ describe('Unit Tests - DataManager & StatsEngine', () => {
     const invalid = getDoiStatus('N/A');
     assert.strictEqual(invalid.isValid, false);
     assert.strictEqual(invalid.isPresent, false);
+
+    const nonDoiSlug = getDoiStatus('cbbd-2022-2446');
+    assert.strictEqual(nonDoiSlug.isValid, false);
+    assert.strictEqual(nonDoiSlug.isPresent, false);
+  });
+
+  test('resolveArticleUrl deve priorizar DOI, depois URL oficial, depois PDF', () => {
+    const withDoi = { doi: '10.22477/ix.ebbc.260', url: 'https://example.com/art', pdf_url: 'https://example.com/art.pdf' };
+    assert.strictEqual(resolveArticleUrl(withDoi), 'https://doi.org/10.22477/ix.ebbc.260');
+
+    const withoutDoiWithUrl = { id: 'cbbd-2022-123', doi: null, url: 'https://portal.febab.org.br/artigo/123', pdf_url: 'https://portal.febab.org.br/pdf/123' };
+    assert.strictEqual(resolveArticleUrl(withoutDoiWithUrl), 'https://portal.febab.org.br/artigo/123');
+
+    const withPdfOnly = { id: 'cbbd-2022-123', doi: null, url: null, pdf_url: 'https://portal.febab.org.br/pdf/123' };
+    assert.strictEqual(resolveArticleUrl(withPdfOnly), 'https://portal.febab.org.br/pdf/123');
   });
 
   test('generateDatasetCitation deve formatar citação do Zenodo em BibTeX, APA e ABNT', () => {
