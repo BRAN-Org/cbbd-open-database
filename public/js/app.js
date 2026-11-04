@@ -915,8 +915,73 @@ function openArticleModal(item) {
     modalZenodoNote.style.display = 'none';
   }
 
-  updateCitationBox();
   modal.classList.add('active');
+  try {
+    updateCitationBox();
+  } catch (err) {
+    console.error('⚠️ Falha ao renderizar citação no modal:', err);
+  }
+}
+
+export function formatItemCitation(item, config, fmt = 'bibtex') {
+  if (!item) return '';
+  const authors = Array.isArray(item.authors) ? item.authors : (item.authors ? [item.authors] : ['Autor Desconhecido']);
+  const year = item.year || item.ano || '2024';
+  const title = item.title || item.titulo || 'Sem título';
+  const rawDoi = (item.doi && item.doi !== 'N/A') ? item.doi : '';
+  const doiInfo = getDoiStatus(rawDoi);
+  const rawZenodoDoi = config?.dataset?.zenodoDoi
+    || (config?.dataset?.doi && config.dataset.doi.toLowerCase().includes('zenodo') ? config.dataset.doi : '')
+    || (config?.organization?.doiUrl && config.organization.doiUrl.toLowerCase().includes('zenodo') ? config.organization.doiUrl.replace(/^https?:\/\/doi\.org\//i, '') : '');
+  const cleanZenodoDoi = rawZenodoDoi ? rawZenodoDoi.replace(/^https?:\/\/doi\.org\//i, '').trim() : '';
+  const zenodoUrl = config?.dataset?.zenodoUrl || (cleanZenodoDoi ? `https://doi.org/${cleanZenodoDoi}` : '');
+  const articleUrl = resolveArticleUrl(item) || (cleanZenodoDoi ? zenodoUrl : '');
+  const citeKey = item.id ? String(item.id).replace(/[^a-zA-Z0-9_-]/g, '_') : (doiInfo.isPresent ? doiInfo.cleanDoi.replace(/[^a-zA-Z0-9_-]/g, '_') : 'item_' + year);
+
+  if (fmt === 'bibtex') {
+    let bib = `@article{${citeKey},\n  title     = {${title}},\n  author    = {${authors.join(' and ')}},\n  year      = {${year}}`;
+    if (doiInfo.isValid) {
+      bib += `,\n  doi       = {${doiInfo.cleanDoi}}`;
+    } else if (cleanZenodoDoi) {
+      bib += `,\n  doi       = {${cleanZenodoDoi}}`;
+    }
+    if (articleUrl) {
+      bib += `,\n  url       = {${articleUrl}}`;
+    }
+    if (cleanZenodoDoi) {
+      bib += `,\n  note      = {Acervo completo preservado no CERN/Zenodo sob DOI ${cleanZenodoDoi}}`;
+    }
+    bib += `\n}`;
+    return bib;
+  } else if (fmt === 'apa') {
+    let apa = `${authors.join(', ')} (${year}). ${title}.`;
+    if (doiInfo.isValid) {
+      apa += ` https://doi.org/${doiInfo.cleanDoi}`;
+    } else if (articleUrl) {
+      apa += ` ${articleUrl}`;
+    }
+    if (!doiInfo.isValid && cleanZenodoDoi) {
+      apa += ` (Zenodo Archive: ${cleanZenodoDoi})`;
+    }
+    return apa;
+  } else if (fmt === 'abnt') {
+    const abntAuthors = authors.map(a => {
+      const parts = String(a).trim().split(/\s+/);
+      const last = parts.pop().toUpperCase();
+      return `${last}, ${parts.join(' ')}`;
+    }).join('; ');
+    let abnt = `${abntAuthors}. ${title}. ${year}.`;
+    if (doiInfo.isValid) {
+      abnt += ` DOI: https://doi.org/${doiInfo.cleanDoi}.`;
+    } else if (articleUrl) {
+      abnt += ` Disponível em: <${articleUrl}>.`;
+    }
+    if (cleanZenodoDoi) {
+      abnt += ` Preservado no Zenodo sob DOI: ${cleanZenodoDoi}.`;
+    }
+    return abnt;
+  }
+  return '';
 }
 
 export function generateDatasetCitation(config, zenodoDoi, zenodoUrl, fmt = 'bibtex') {
@@ -946,7 +1011,6 @@ function renderDatasetCitation(config, zenodoDoi, zenodoUrl) {
 
 function updateCitationBox() {
   if (!currentModalItem) return;
-  const item = currentModalItem;
   const citationEl = document.getElementById('citation-content');
   if (!citationEl) return;
 
@@ -958,56 +1022,10 @@ function updateCitationBox() {
     || (cleanZenodoDoi ? `https://doi.org/${cleanZenodoDoi}` : '')
     || (appConfig?.organization?.doiUrl && appConfig.organization.doiUrl.toLowerCase().includes('zenodo') ? appConfig.organization.doiUrl : '');
 
-  // Mode: Cite Dataset on Zenodo
   if (currentCitationMode === 'dataset') {
     citationEl.textContent = generateDatasetCitation(appConfig, cleanZenodoDoi, zenodoUrl, currentCitationFmt);
-    return;
-  }
-
-  // Mode: Cite Item
-  const authors = Array.isArray(item.authors) ? item.authors : (item.authors ? [item.authors] : ['Autor Desconhecido']);
-  const year = item.year || item.ano || '2024';
-  const rawDoi = (item.doi && item.doi !== 'N/A') ? item.doi : '';
-  const doiInfo = getDoiStatus(rawDoi);
-  const articleUrl = resolveArticleUrl(item) || (cleanZenodoDoi ? zenodoUrl : '');
-  const citeKey = item.id ? String(item.id).replace(/[^a-zA-Z0-9_-]/g, '_') : (doiInfo.isPresent ? doiInfo.cleanDoi.replace(/[^a-zA-Z0-9_-]/g, '_') : 'item_' + year);
-
-  if (currentCitationFmt === 'bibtex') {
-    let bib = `@article{${doiKey},\n  title     = {${title}},\n  author    = {${authors.join(' and ')}},\n  year      = {${year}}`;
-    if (doiInfo.isValid) {
-      bib += `,\n  doi       = {${doiInfo.cleanDoi}}`;
-    } else if (cleanZenodoDoi) {
-      bib += `,\n  doi       = {${cleanZenodoDoi}}`;
-    }
-    if (doiUrl) {
-      bib += `,\n  url       = {${doiUrl}}`;
-    }
-    if (cleanZenodoDoi) {
-      bib += `,\n  note      = {Acervo completo preservado no CERN/Zenodo sob DOI ${cleanZenodoDoi}}`;
-    }
-    bib += `\n}`;
-    citationEl.textContent = bib;
-  } else if (currentCitationFmt === 'apa') {
-    let apa = `${authors.join(', ')} (${year}). ${title}.`;
-    if (doiUrl) apa += ` ${doiUrl}`;
-    if (!doiInfo.isValid && cleanZenodoDoi) {
-      apa += ` (Zenodo Archive: ${cleanZenodoDoi})`;
-    }
-    citationEl.textContent = apa;
-  } else if (currentCitationFmt === 'abnt') {
-    const abntAuthors = authors.map(a => {
-      const parts = String(a).trim().split(' ');
-      const last = parts.pop().toUpperCase();
-      return `${last}, ${parts.join(' ')}`;
-    }).join('; ');
-    let abnt = `${abntAuthors}. ${title}. ${year}.`;
-    if (doiUrl) {
-      abnt += ` Disponível em: <${doiUrl}>.`;
-    }
-    if (cleanZenodoDoi) {
-      abnt += ` Preservado no Zenodo sob DOI: ${cleanZenodoDoi}.`;
-    }
-    citationEl.textContent = abnt;
+  } else {
+    citationEl.textContent = formatItemCitation(currentModalItem, appConfig, currentCitationFmt);
   }
 }
 
