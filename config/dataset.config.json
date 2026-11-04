@@ -10,6 +10,7 @@
   },
   "dataset": {
     "title": "CBBD Open Data - Anais e Trabalhos Científicos (1954–2026)",
+    "acronym": "CBBD",
     "subtitle": "Acervo Histórico e Preservação Digital dos Anais da FEBAB",
     "description": "Base de dados aberta contendo todos os trabalhos científicos publicados nos anais do Congresso Brasileiro de Biblioteconomia, Documentação e Ciência da Informação (CBBD) de 1954 a 2026, promovido pela FEBAB, disponibilizada sob princípios FAIR e BOAI.",
     "version": "1.0.0",

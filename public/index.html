@@ -707,11 +707,14 @@
 
       <div class="modal-section" style="margin-top: 24px; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
         <div id="modal-doi-text-container" style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">
-          <!-- Ex: DOI: https://doi.org/10.22477/ix.ebbc.260 -->
+          <!-- Ex: DOI: https://doi.org/10.5281/zenodo.1234567 -->
         </div>
-        <div style="display: flex; gap: 0.75rem;">
-          <a href="#" id="modal-doi-link" target="_blank" class="btn btn-primary" style="display: inline-block; text-decoration: none;">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar Publicação
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="#" id="modal-doi-link" target="_blank" class="btn btn-primary" style="display: none; text-decoration: none;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar DOI
+          </a>
+          <a href="#" id="modal-source-link" target="_blank" class="btn btn-primary" style="display: none; text-decoration: none;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar Fonte Oficial
           </a>
           <a href="#" id="modal-pdf-link" target="_blank" class="btn btn-secondary" style="display: none; text-decoration: none; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
             <i class="fa-solid fa-file-pdf"></i> Baixar PDF

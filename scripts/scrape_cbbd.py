@@ -123,11 +123,14 @@ def extract_omeka_abstract(raw):
 
 def harvest_omeka_collection(meta):
     col = meta["col"]
-    url = f"http://repositorio.febab.org.br/items/browse?collection={col}&output=dcmes-xml"
+    url = f"http://repositorio.febab.org.br/items/browse?collection={col}&output=omeka-xml"
     print(f"📦 Coletando Omeka Coleção {col} (Ano {meta['year']}, Edição {meta['edition']})...", flush=True)
-    xml_data = fetch_url(url, timeout=30)
+    xml_data = fetch_url(url, timeout=40)
     if not xml_data:
-        return []
+        url = f"http://repositorio.febab.org.br/items/browse?collection={col}&output=dcmes-xml"
+        xml_data = fetch_url(url, timeout=30)
+        if not xml_data:
+            return []
 
     try:
         root = ET.fromstring(xml_data)
@@ -135,60 +138,116 @@ def harvest_omeka_collection(meta):
         print(f"❌ Erro ao parsear XML da coleção {col}: {e}", flush=True)
         return []
 
-    ns = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'dc': 'http://purl.org/dc/elements/1.1/'}
-    descriptions = root.findall('rdf:Description', ns)
     articles = []
+    ns_omeka = {'o': 'http://omeka.org/schemas/omeka-xml/v5'}
+    ns_dc = {'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'dc': 'http://purl.org/dc/elements/1.1/'}
 
-    for d in descriptions:
-        about = d.attrib.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about', '')
-        title_el = d.find('dc:title', ns)
-        title = clean_text(title_el.text) if title_el is not None and title_el.text else ""
-        if not title or len(title) < 3:
-            continue
+    omeka_items = root.findall('.//o:item', ns_omeka)
+    if omeka_items:
+        for it in omeka_items:
+            item_id = it.attrib.get('itemId')
+            canonical_id = f"cbbd-{meta['year']}-{item_id}"
 
-        item_id_match = re.search(r'/items/show/(\d+)', about)
-        item_id = item_id_match.group(1) if item_id_match else str(len(articles) + 1)
-        canonical_id = f"cbbd-{meta['year']}-{item_id}"
+            files = it.findall('.//o:file/o:src', ns_omeka)
+            pdf_url = next((f.text for f in files if f.text and f.text.endswith('.pdf')), '')
+            if not pdf_url:
+                pdf_url = next((f.text for f in files if f.text), '')
 
-        creators = [clean_author_name(c.text) for c in d.findall('dc:creator', ns) if c.text]
-        clean_creators = [c for c in creators if c and len(c) > 2]
-        if not clean_creators:
-            clean_creators = ["FEBAB"]
+            titles, creators, descriptions, subjects = [], [], [], []
+            for el in it.findall('.//o:element', ns_omeka):
+                el_name = el.find('o:name', ns_omeka)
+                if el_name is None:
+                    continue
+                name = el_name.text
+                for t in el.findall('.//o:text', ns_omeka):
+                    if not t.text:
+                        continue
+                    txt = t.text.strip()
+                    if name == 'Title':
+                        titles.append(txt)
+                    elif name == 'Creator':
+                        creators.append(txt)
+                    elif name == 'Description':
+                        descriptions.append(txt)
+                    elif name == 'Subject':
+                        subjects.append(txt)
 
-        date_el = d.find('dc:date', ns)
-        year = meta["year"]
-        if date_el is not None and date_el.text:
-            m_year = re.search(r'\b(19\d\d|20\d\d)\b', date_el.text)
-            if m_year:
-                year = int(m_year.group(1))
+            title = clean_text(titles[0]) if titles else ""
+            if not title or len(title) < 3:
+                continue
 
-        desc_el = d.find('dc:description', ns)
-        abstract = extract_omeka_abstract(desc_el.text) if desc_el is not None and desc_el.text else ""
+            clean_creators = [clean_author_name(c) for c in creators if c and len(c) > 2]
+            if not clean_creators:
+                clean_creators = ["FEBAB"]
 
-        subjects = []
-        for s in d.findall('dc:subject', ns):
-            if s.text:
-                st = clean_text(s.text)
-                if st and st not in subjects:
-                    subjects.append(st)
+            abstract = extract_omeka_abstract(descriptions[0]) if descriptions else ""
 
-        articles.append({
-            "id": canonical_id,
-            "title": title,
-            "authors": clean_creators,
-            "year": year,
-            "abstract": abstract,
-            "keywords": subjects,
-            "event_name": "Congresso Brasileiro de Biblioteconomia e Documentação",
-            "edition": meta["edition"],
-            "city": meta["city"],
-            "state": meta["state"],
-            "url": about or f"http://repositorio.febab.org.br/items/show/{item_id}",
-            "pdf_url": "",
-            "source_platform": "Omeka FEBAB"
-        })
+            clean_subjects = []
+            for s in subjects:
+                st = clean_text(s)
+                if st and st not in clean_subjects:
+                    clean_subjects.append(st)
 
-    print(f"   ✓ Coleção {col}: {len(articles)} trabalhos extraídos.", flush=True)
+            articles.append({
+                "id": canonical_id,
+                "title": title,
+                "authors": clean_creators,
+                "year": meta["year"],
+                "abstract": abstract,
+                "keywords": clean_subjects,
+                "event_name": "Congresso Brasileiro de Biblioteconomia e Documentação",
+                "edition": meta["edition"],
+                "city": meta["city"],
+                "state": meta["state"],
+                "url": f"http://repositorio.febab.org.br/items/show/{item_id}",
+                "pdf_url": pdf_url or "",
+                "source_platform": "Omeka FEBAB"
+            })
+    else:
+        descriptions = root.findall('rdf:Description', ns_dc)
+        for d in descriptions:
+            about = d.attrib.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about', '')
+            title_el = d.find('dc:title', ns_dc)
+            title = clean_text(title_el.text) if title_el is not None and title_el.text else ""
+            if not title or len(title) < 3:
+                continue
+
+            item_id_match = re.search(r'/items/show/(\d+)', about)
+            item_id = item_id_match.group(1) if item_id_match else str(len(articles) + 1)
+            canonical_id = f"cbbd-{meta['year']}-{item_id}"
+
+            creators = [clean_author_name(c.text) for c in d.findall('dc:creator', ns_dc) if c.text]
+            clean_creators = [c for c in creators if c and len(c) > 2]
+            if not clean_creators:
+                clean_creators = ["FEBAB"]
+
+            desc_el = d.find('dc:description', ns_dc)
+            abstract = extract_omeka_abstract(desc_el.text) if desc_el is not None and desc_el.text else ""
+
+            subjects = []
+            for s in d.findall('dc:subject', ns_dc):
+                if s.text:
+                    st = clean_text(s.text)
+                    if st and st not in subjects:
+                        subjects.append(st)
+
+            articles.append({
+                "id": canonical_id,
+                "title": title,
+                "authors": clean_creators,
+                "year": meta["year"],
+                "abstract": abstract,
+                "keywords": subjects,
+                "event_name": "Congresso Brasileiro de Biblioteconomia e Documentação",
+                "edition": meta["edition"],
+                "city": meta["city"],
+                "state": meta["state"],
+                "url": about or f"http://repositorio.febab.org.br/items/show/{item_id}",
+                "pdf_url": "",
+                "source_platform": "Omeka FEBAB"
+            })
+
+    print(f"   ✓ Coleção {col}: {len(articles)} trabalhos extraídos ({sum(1 for a in articles if a.get('pdf_url'))} com PDF).", flush=True)
     return articles
 
 def harvest_oai_set(base_url, meta, platform_name="OJS FEBAB"):
