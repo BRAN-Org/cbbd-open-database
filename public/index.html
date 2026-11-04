@@ -684,13 +684,7 @@
 
       <!-- Gerador de Citações Científicas -->
       <div class="modal-section citation-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <h4 style="margin: 0;"><i class="fa-solid fa-quote-left"></i> Citar este Trabalho</h4>
-          <div style="display: flex; gap: 0.35rem; font-size: 0.75rem;">
-            <button class="citation-mode-btn active" id="btn-cite-mode-item" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 8px; color: var(--text-primary); cursor: pointer;">Artigo</button>
-            <button class="citation-mode-btn" id="btn-cite-mode-dataset" style="background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2px 8px; color: var(--text-secondary); cursor: pointer;">Base (Zenodo)</button>
-          </div>
-        </div>
+        <h4 style="margin: 0 0 0.5rem 0;"><i class="fa-solid fa-quote-left"></i> Citar este Trabalho</h4>
         <div class="citation-tabs">
           <button class="citation-tab active" data-fmt="bibtex">BibTeX</button>
           <button class="citation-tab" data-fmt="apa">APA 7th</button>
@@ -699,9 +693,6 @@
         <div class="citation-box">
           <button class="copy-btn" id="btn-copy-citation"><i class="fa-regular fa-copy"></i> Copiar Citação</button>
           <pre><code id="citation-content"></code></pre>
-        </div>
-        <div id="modal-zenodo-archive-note" style="margin-top: 0.5rem; font-size: 0.76rem; color: var(--text-secondary); display: none;">
-          <i class="fa-solid fa-box-archive" style="color: #60a5fa;"></i> Dados brutos, SQLite3 e textos completos preservados no Zenodo: <a href="#" id="modal-zenodo-archive-link" target="_blank" style="color: #93c5fd; text-decoration: underline;"></a>
         </div>
       </div>
 
