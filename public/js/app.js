@@ -708,7 +708,6 @@ function renderArticleCards(items) {
 
 let currentModalItem = null;
 let currentCitationFmt = 'bibtex';
-let currentCitationMode = 'item'; // 'item' or 'dataset'
 let currentDatasetCitationFmt = 'bibtex';
 
 function openArticleModal(item) {
@@ -885,36 +884,6 @@ function openArticleModal(item) {
     }
   }
 
-  // Reset modal citation mode to item
-  currentCitationMode = 'item';
-  const btnCiteModeItem = document.getElementById('btn-cite-mode-item');
-  const btnCiteModeDataset = document.getElementById('btn-cite-mode-dataset');
-  if (btnCiteModeItem && btnCiteModeDataset) {
-    btnCiteModeItem.classList.add('active');
-    btnCiteModeItem.style.background = 'rgba(255,255,255,0.08)';
-    btnCiteModeItem.style.color = 'var(--text-primary)';
-    btnCiteModeDataset.classList.remove('active');
-    btnCiteModeDataset.style.background = 'transparent';
-    btnCiteModeDataset.style.color = 'var(--text-secondary)';
-  }
-
-  const rawZenodoDoi = appConfig?.dataset?.zenodoDoi
-    || (appConfig?.dataset?.doi && appConfig.dataset.doi.toLowerCase().includes('zenodo') ? appConfig.dataset.doi : '')
-    || (appConfig?.organization?.doiUrl && appConfig.organization.doiUrl.toLowerCase().includes('zenodo') ? appConfig.organization.doiUrl.replace(/^https?:\/\/doi\.org\//i, '') : '');
-  const cleanZenodoDoi = rawZenodoDoi ? rawZenodoDoi.replace(/^https?:\/\/doi\.org\//i, '').trim() : '';
-  const zenodoUrl = appConfig?.dataset?.zenodoUrl
-    || (cleanZenodoDoi ? `https://doi.org/${cleanZenodoDoi}` : '');
-
-  const modalZenodoNote = document.getElementById('modal-zenodo-archive-note');
-  const modalZenodoLink = document.getElementById('modal-zenodo-archive-link');
-  if (cleanZenodoDoi && modalZenodoNote && modalZenodoLink) {
-    modalZenodoLink.href = zenodoUrl;
-    modalZenodoLink.textContent = `DOI: ${cleanZenodoDoi}`;
-    modalZenodoNote.style.display = 'block';
-  } else if (modalZenodoNote) {
-    modalZenodoNote.style.display = 'none';
-  }
-
   modal.classList.add('active');
   try {
     updateCitationBox();
@@ -930,26 +899,16 @@ export function formatItemCitation(item, config, fmt = 'bibtex') {
   const title = item.title || item.titulo || 'Sem título';
   const rawDoi = (item.doi && item.doi !== 'N/A') ? item.doi : '';
   const doiInfo = getDoiStatus(rawDoi);
-  const rawZenodoDoi = config?.dataset?.zenodoDoi
-    || (config?.dataset?.doi && config.dataset.doi.toLowerCase().includes('zenodo') ? config.dataset.doi : '')
-    || (config?.organization?.doiUrl && config.organization.doiUrl.toLowerCase().includes('zenodo') ? config.organization.doiUrl.replace(/^https?:\/\/doi\.org\//i, '') : '');
-  const cleanZenodoDoi = rawZenodoDoi ? rawZenodoDoi.replace(/^https?:\/\/doi\.org\//i, '').trim() : '';
-  const zenodoUrl = config?.dataset?.zenodoUrl || (cleanZenodoDoi ? `https://doi.org/${cleanZenodoDoi}` : '');
-  const articleUrl = resolveArticleUrl(item) || (cleanZenodoDoi ? zenodoUrl : '');
+  const articleUrl = resolveArticleUrl(item) || '';
   const citeKey = item.id ? String(item.id).replace(/[^a-zA-Z0-9_-]/g, '_') : (doiInfo.isPresent ? doiInfo.cleanDoi.replace(/[^a-zA-Z0-9_-]/g, '_') : 'item_' + year);
 
   if (fmt === 'bibtex') {
     let bib = `@article{${citeKey},\n  title     = {${title}},\n  author    = {${authors.join(' and ')}},\n  year      = {${year}}`;
     if (doiInfo.isValid) {
       bib += `,\n  doi       = {${doiInfo.cleanDoi}}`;
-    } else if (cleanZenodoDoi) {
-      bib += `,\n  doi       = {${cleanZenodoDoi}}`;
     }
     if (articleUrl) {
       bib += `,\n  url       = {${articleUrl}}`;
-    }
-    if (cleanZenodoDoi) {
-      bib += `,\n  note      = {Acervo completo preservado no CERN/Zenodo sob DOI ${cleanZenodoDoi}}`;
     }
     bib += `\n}`;
     return bib;
@@ -959,9 +918,6 @@ export function formatItemCitation(item, config, fmt = 'bibtex') {
       apa += ` https://doi.org/${doiInfo.cleanDoi}`;
     } else if (articleUrl) {
       apa += ` ${articleUrl}`;
-    }
-    if (!doiInfo.isValid && cleanZenodoDoi) {
-      apa += ` (Zenodo Archive: ${cleanZenodoDoi})`;
     }
     return apa;
   } else if (fmt === 'abnt') {
@@ -975,9 +931,6 @@ export function formatItemCitation(item, config, fmt = 'bibtex') {
       abnt += ` DOI: https://doi.org/${doiInfo.cleanDoi}.`;
     } else if (articleUrl) {
       abnt += ` Disponível em: <${articleUrl}>.`;
-    }
-    if (cleanZenodoDoi) {
-      abnt += ` Preservado no Zenodo sob DOI: ${cleanZenodoDoi}.`;
     }
     return abnt;
   }
@@ -1013,20 +966,7 @@ function updateCitationBox() {
   if (!currentModalItem) return;
   const citationEl = document.getElementById('citation-content');
   if (!citationEl) return;
-
-  const rawZenodoDoi = appConfig?.dataset?.zenodoDoi
-    || (appConfig?.dataset?.doi && appConfig.dataset.doi.toLowerCase().includes('zenodo') ? appConfig.dataset.doi : '')
-    || (appConfig?.organization?.doiUrl && appConfig.organization.doiUrl.toLowerCase().includes('zenodo') ? appConfig.organization.doiUrl.replace(/^https?:\/\/doi\.org\//i, '') : '');
-  const cleanZenodoDoi = rawZenodoDoi ? rawZenodoDoi.replace(/^https?:\/\/doi\.org\//i, '').trim() : '';
-  const zenodoUrl = appConfig?.dataset?.zenodoUrl
-    || (cleanZenodoDoi ? `https://doi.org/${cleanZenodoDoi}` : '')
-    || (appConfig?.organization?.doiUrl && appConfig.organization.doiUrl.toLowerCase().includes('zenodo') ? appConfig.organization.doiUrl : '');
-
-  if (currentCitationMode === 'dataset') {
-    citationEl.textContent = generateDatasetCitation(appConfig, cleanZenodoDoi, zenodoUrl, currentCitationFmt);
-  } else {
-    citationEl.textContent = formatItemCitation(currentModalItem, appConfig, currentCitationFmt);
-  }
+  citationEl.textContent = formatItemCitation(currentModalItem, appConfig, currentCitationFmt);
 }
 
 function initModal() {
@@ -1037,34 +977,6 @@ function initModal() {
     closeBtn.addEventListener('click', () => modal.classList.remove('active'));
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.classList.remove('active');
-    });
-  }
-
-  // Citation mode buttons (Artigo vs Dataset no Zenodo)
-  const btnCiteModeItem = document.getElementById('btn-cite-mode-item');
-  const btnCiteModeDataset = document.getElementById('btn-cite-mode-dataset');
-
-  if (btnCiteModeItem && btnCiteModeDataset) {
-    btnCiteModeItem.addEventListener('click', () => {
-      currentCitationMode = 'item';
-      btnCiteModeItem.classList.add('active');
-      btnCiteModeItem.style.background = 'rgba(255,255,255,0.08)';
-      btnCiteModeItem.style.color = 'var(--text-primary)';
-      btnCiteModeDataset.classList.remove('active');
-      btnCiteModeDataset.style.background = 'transparent';
-      btnCiteModeDataset.style.color = 'var(--text-secondary)';
-      updateCitationBox();
-    });
-
-    btnCiteModeDataset.addEventListener('click', () => {
-      currentCitationMode = 'dataset';
-      btnCiteModeDataset.classList.add('active');
-      btnCiteModeDataset.style.background = 'rgba(255,255,255,0.08)';
-      btnCiteModeDataset.style.color = 'var(--text-primary)';
-      btnCiteModeItem.classList.remove('active');
-      btnCiteModeItem.style.background = 'transparent';
-      btnCiteModeItem.style.color = 'var(--text-secondary)';
-      updateCitationBox();
     });
   }
 

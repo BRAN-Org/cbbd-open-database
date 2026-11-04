@@ -148,13 +148,16 @@ describe('Unit Tests - DataManager & StatsEngine', () => {
     assert.ok(bibtex.includes('@article{cbbd-2024-101'));
     assert.ok(bibtex.includes('A Biblioteca Escolar'));
     assert.ok(bibtex.includes('url       = {https://portal.febab.org.br/cbbd2024/article/view/101}'));
+    assert.strictEqual(bibtex.toLowerCase().includes('zenodo'), false, 'BibTeX do artigo não deve conter referências ao Zenodo');
 
     const apa = formatItemCitation(sampleItem, dummyConfig, 'apa');
     assert.ok(apa.includes('Leoneide Maria Brito Martins (2024). A Biblioteca Escolar'));
     assert.ok(apa.includes('https://portal.febab.org.br/cbbd2024/article/view/101'));
+    assert.strictEqual(apa.toLowerCase().includes('zenodo'), false, 'APA do artigo não deve conter referências ao Zenodo');
 
     const abnt = formatItemCitation(sampleItem, dummyConfig, 'abnt');
     assert.ok(abnt.includes('MARTINS, Leoneide Maria Brito'));
     assert.ok(abnt.includes('Disponível em: <https://portal.febab.org.br/cbbd2024/article/view/101>'));
+    assert.strictEqual(abnt.toLowerCase().includes('zenodo'), false, 'ABNT do artigo não deve conter referências ao Zenodo');
   });
 });
