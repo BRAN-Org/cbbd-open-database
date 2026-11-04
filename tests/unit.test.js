@@ -8,7 +8,7 @@ import {
   calculateScatterData, 
   calculateParetoData 
 } from '../src/statsEngine.js';
-import { getDoiStatus, resolveArticleUrl, generateDatasetCitation } from '../public/js/app.js';
+import { getDoiStatus, resolveArticleUrl, generateDatasetCitation, formatItemCitation } from '../public/js/app.js';
 
 describe('Unit Tests - DataManager & StatsEngine', () => {
   test('normalizeString deve remover acentos e converter para caixa baixa', () => {
@@ -128,5 +128,33 @@ describe('Unit Tests - DataManager & StatsEngine', () => {
     const abnt = generateDatasetCitation(dummyConfig, doi, url, 'abnt');
     assert.ok(abnt.includes('BRAN ORG. EBBC Open Data:'));
     assert.ok(abnt.includes('DOI: 10.5281/zenodo.23593513'));
+  });
+
+  test('formatItemCitation deve formatar citação de item em BibTeX, APA e ABNT sem erros', () => {
+    const sampleItem = {
+      id: 'cbbd-2024-101',
+      title: 'A Biblioteca Escolar como espaço de educação antirracista',
+      authors: ['Leoneide Maria Brito Martins'],
+      year: 2024,
+      url: 'https://portal.febab.org.br/cbbd2024/article/view/101',
+      pdf_url: 'https://portal.febab.org.br/files/original/101.pdf'
+    };
+    const dummyConfig = {
+      dataset: { title: 'CBBD Open Data', zenodoDoi: '10.5281/zenodo.123' },
+      organization: { name: 'BRAN Org' }
+    };
+
+    const bibtex = formatItemCitation(sampleItem, dummyConfig, 'bibtex');
+    assert.ok(bibtex.includes('@article{cbbd-2024-101'));
+    assert.ok(bibtex.includes('A Biblioteca Escolar'));
+    assert.ok(bibtex.includes('url       = {https://portal.febab.org.br/cbbd2024/article/view/101}'));
+
+    const apa = formatItemCitation(sampleItem, dummyConfig, 'apa');
+    assert.ok(apa.includes('Leoneide Maria Brito Martins (2024). A Biblioteca Escolar'));
+    assert.ok(apa.includes('https://portal.febab.org.br/cbbd2024/article/view/101'));
+
+    const abnt = formatItemCitation(sampleItem, dummyConfig, 'abnt');
+    assert.ok(abnt.includes('MARTINS, Leoneide Maria Brito'));
+    assert.ok(abnt.includes('Disponível em: <https://portal.febab.org.br/cbbd2024/article/view/101>'));
   });
 });
