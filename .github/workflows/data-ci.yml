@@ -149,7 +149,7 @@ jobs:
           else
             git commit -m "chore(data): sincronizar formatos derivados e proveniência [skip ci]"
             git pull --rebase origin ${{ github.ref_name }} || true
-            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }}
+            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }} || echo "Push ignorado devido a branch protection. Por favor, utilize Pull Request."
           fi
 
       # 3. Sincronização e Upload no Zenodo em Release CalVer
@@ -176,5 +176,5 @@ jobs:
           else
             git commit -m "chore(zenodo): registrar depósito da release por CRONA [skip ci]"
             git pull --rebase origin ${{ github.ref_name }} || true
-            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }}
+            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }} || echo "Push ignorado devido a branch protection."
           fi

@@ -200,16 +200,28 @@ def update_provenance(prov_path, json_path, csv_path, sqlite_path, items):
     csv_sha = sha256_file(csv_path)
     sqlite_sha = sha256_file(sqlite_path)
 
+    new_checksums = {
+        os.path.basename(json_path): json_sha,
+        os.path.basename(csv_path): csv_sha,
+        os.path.basename(sqlite_path): sqlite_sha
+    }
+
+    if (
+        prov.get("checksums") == new_checksums
+        and prov.get("total_records") == total
+        and prov.get("missing_doi_count") == missing_doi
+        and prov.get("missing_abstract_count") == missing_abs
+        and prov.get("raw_data_sha256") == json_sha
+    ):
+        print(f"🔒 Provenance já está sincronizado ({prov_path}): checksums coincidem.")
+        return
+
     prov["total_records"] = total
     prov["missing_doi_count"] = missing_doi
     prov["missing_abstract_count"] = missing_abs
     prov["raw_data_sha256"] = json_sha
     prov["last_audited_at"] = datetime.now(timezone.utc).isoformat()
-    prov["checksums"] = {
-        os.path.basename(json_path): json_sha,
-        os.path.basename(csv_path): csv_sha,
-        os.path.basename(sqlite_path): sqlite_sha
-    }
+    prov["checksums"] = new_checksums
 
     with open(prov_path, "w", encoding="utf-8") as pf:
         json.dump(prov, pf, indent=2, ensure_ascii=False)
