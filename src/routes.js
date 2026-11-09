@@ -9,11 +9,17 @@ import {
   calculateParetoData 
 } from './statsEngine.js';
 import { exportDataset } from './exportEngine.js';
+import { generateOpenApiSpec } from './openapi.js';
 
 export function createApiRouter() {
   const router = Router();
   const config = getDatasetConfig();
   const entityName = config.dataset?.entityName || 'articles';
+
+  // Especificação OpenAPI 3.0
+  router.get('/openapi.json', (req, res) => {
+    res.json(generateOpenApiSpec(getDatasetConfig()));
+  });
 
   // 1. Configuração pública
   router.get('/config', (req, res) => {

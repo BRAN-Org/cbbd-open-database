@@ -12,3 +12,7 @@ data/raw/
 *.sqlite
 *.sqlite3
 *.tar.gz
+
+# Local agent rules
+AGENTS.md
+GEMINI.md

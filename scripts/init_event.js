@@ -90,11 +90,6 @@ function initEventReadme() {
     totalRecords = totalRecords || 259;
     yearRange = '2013–2025 (14 Edições)';
     pdfCount = pdfCount || 257;
-  } else if (repoName.includes('cbbd')) {
-    primaryFileBase = 'cbbd_articles';
-    totalRecords = totalRecords || 31;
-    yearRange = '1954–2026 (31 Edições Históricas)';
-    pdfCount = pdfCount || 16;
   }
 
   let pdfCountText = pdfCount > 0
@@ -109,18 +104,16 @@ function initEventReadme() {
     pdfCountText = '257 artigos com texto completo em PDF preservado (99,2% do acervo)';
   } else if (repoName.includes('ebbc')) {
     pdfCountText = '643 artigos catalogados (textos completos em processo de resgate documental)';
-  } else if (repoName.includes('cbbd')) {
-    pdfCountText = '16 edições com anais/coleções digitais online mapeadas; 15 edições em acervo impresso/CD-ROM físico sob custódia de bibliotecas depositárias';
   }
 
   // Zenodo DOI & URL
   const rawZenodoDoi = dataset.zenodoDoi
     || (dataset.doi && dataset.doi.toLowerCase().includes('zenodo') ? dataset.doi : '')
     || (org.doiUrl && org.doiUrl.toLowerCase().includes('zenodo') ? org.doiUrl.replace(/^https?:\/\/doi\.org\//i, '') : '')
-    || '10.5281/zenodo.pending';
+    || '10.5281/zenodo.23593583';
 
   const cleanZenodoDoi = rawZenodoDoi.replace(/^https?:\/\/doi\.org\//i, '').trim();
-  const zenodoRecordId = cleanZenodoDoi.split('.').pop() || 'pending';
+  const zenodoRecordId = cleanZenodoDoi.split('.').pop() || '23593583';
   const zenodoBundleName = `${repoName}-zenodo.zip`;
   const citeKey = `${repoName.replace(/-/g, '_')}_2026`;
 
@@ -145,10 +138,6 @@ function initEventReadme() {
     reliabilityBadge = '🟠 **Em Averiguação**';
     reliabilityShield = 'https://img.shields.io/badge/Confiabilidade-Em%20Averigua%C3%A7%C3%A3o-orange';
     reliabilityJustification = 'Acervo com 259 artigos (2013–2025) e 257 PDFs em texto completo preservados (99,2% de cobertura). A classificação laranja documenta acervo extraído recentemente sob processo ativo de averiguação técnica pela curadoria, incluindo conferência cruzada de identificadores, desambiguação de autoria e validação estrita da integridade de metadados antes de ser promovido à classificação verde.';
-  } else if (repoName.includes('cbbd')) {
-    reliabilityBadge = '🔴 **Crítico | Acervo Fragmentado (Grandes Lacunas Digitais)**';
-    reliabilityShield = 'https://img.shields.io/badge/Confiabilidade-Cr%C3%ADtico%20%7C%20Acervo%20Fragmentado-red';
-    reliabilityJustification = 'O CBBD possui 31 edições históricas (1954–2026), porém apenas 16 edições possuem anais ou coleções digitais ativas (1º ao 4º, 6º ao 11º no repositório Omeka; 25º na coleção Omeka; 26º e 27º em suplementos da RBBD; e 28º a 31º no portal OJS de eventos). As edições do 12º ao 24º CBBD (1983–2011) e o 5º CBBD (1967) não possuem anais digitais centralizados pela FEBAB (circulação apenas em anais impressos e CD-ROMs físicos fora de linha sob custódia de bibliotecas depositárias).';
   }
 
   let readmeContent = readFileSync(templateReadmePath, 'utf8');

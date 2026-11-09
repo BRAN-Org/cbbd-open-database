@@ -63,8 +63,13 @@ function generateBibtex(items, config) {
     if (cleanDoi && cleanDoi !== 'N/A') {
       bib += `  doi = {${cleanDoi}},\n`;
     }
-    if (item.pdf_url || item.url) {
-      bib += `  url = {${item.pdf_url || item.url}},\n`;
+    if (item.url) {
+      bib += `  url = {${escapeBibtex(item.url)}},\n`;
+    } else if (item.pdf_url) {
+      bib += `  url = {${escapeBibtex(item.pdf_url)}},\n`;
+    }
+    if (item.pdf_url) {
+      bib += `  eprint = {${escapeBibtex(item.pdf_url)}},\n`;
     }
     if (item.abstract) {
       bib += `  abstract = {${escapeBibtex(item.abstract)}},\n`;
@@ -108,8 +113,14 @@ function generateRis(items, config) {
       ris += `DO  - ${cleanDoi}\n`;
     }
 
-    if (item.pdf_url || item.url) {
-      ris += `UR  - ${item.pdf_url || item.url}\n`;
+    if (item.url) {
+      ris += `UR  - ${item.url}\n`;
+    }
+    if (item.pdf_url) {
+      ris += `L1  - ${item.pdf_url}\n`;
+      if (!item.url) {
+        ris += `UR  - ${item.pdf_url}\n`;
+      }
     }
 
     if (item.abstract) {

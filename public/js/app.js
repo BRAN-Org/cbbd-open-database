@@ -1152,7 +1152,7 @@ function initSandbox() {
         const res = await fetch(path);
         const t1 = performance.now();
         const latency = Math.round(t1 - t0);
-        const data = await res.json();
+        const contentType = res.headers.get('content-type') || '';
 
         if (badgeEl) {
           badgeEl.className = 'playground-status';
@@ -1160,7 +1160,13 @@ function initSandbox() {
         }
 
         if (codeEl) {
-          codeEl.textContent = JSON.stringify(data, null, 2);
+          if (contentType.includes('application/json')) {
+            const data = await res.json();
+            codeEl.textContent = JSON.stringify(data, null, 2);
+          } else {
+            const text = await res.text();
+            codeEl.textContent = text;
+          }
         }
       } catch (err) {
         if (badgeEl) {
@@ -1175,6 +1181,8 @@ function initSandbox() {
         executeBtn.innerHTML = '<i class="fa-solid fa-play"></i> Executar Requisição';
       }
     });
+
+    endpointSelect.addEventListener('change', updateSandboxCode);
   }
 
   const langSelect = document.getElementById('sandbox-lang');
@@ -1213,25 +1221,53 @@ function initSandbox() {
 
 function updateSandboxCode() {
   if (!appConfig) return;
-  const entity = appConfig.dataset?.entityName || 'articles';
   const baseUrl = window.location.origin;
-
+  const endpointSelect = document.getElementById('playground-endpoint-select');
+  const selectedPath = endpointSelect ? endpointSelect.value : '/api/v1/articles?limit=10';
   const lang = document.getElementById('sandbox-lang')?.value || 'curl';
-  const targetUrl = `${baseUrl}/api/v1/${entity}?limit=10`;
+  const targetUrl = `${baseUrl}${selectedPath}`;
 
   const codeEl = document.getElementById('sandbox-code');
   if (!codeEl) return;
 
+  const isExport = selectedPath.includes('/export');
+  const isBib = selectedPath.includes('format=bib');
+  const isRis = selectedPath.includes('format=ris');
+  const isCsv = selectedPath.includes('format=csv');
+
   if (lang === 'curl') {
-    codeEl.textContent = `curl -X GET "${targetUrl}" \\\n  -H "Accept: application/json"`;
+    if (isCsv || isBib || isRis) {
+      const ext = isCsv ? 'csv' : (isRis ? 'ris' : 'bib');
+      codeEl.textContent = `curl -s -L "${targetUrl}" -o "export_${ext}.${ext}"`;
+    } else {
+      codeEl.textContent = `curl -X GET "${targetUrl}" \\\n  -H "Accept: application/json"`;
+    }
   } else if (lang === 'javascript') {
-    codeEl.textContent = `// Requisição em JavaScript (Fetch API)\nfetch("${targetUrl}")\n  .then(response => response.json())\n  .then(data => console.log(data));`;
+    if (isCsv || isBib || isRis) {
+      codeEl.textContent = `// Requisição em JavaScript (Download de Texto/Arquivo)\nfetch("${targetUrl}")\n  .then(response => response.text())\n  .then(content => {\n    console.log(content.slice(0, 500) + '...');\n  });`;
+    } else {
+      codeEl.textContent = `// Requisição em JavaScript (Fetch API)\nfetch("${targetUrl}")\n  .then(response => response.json())\n  .then(data => console.log(data));`;
+    }
   } else if (lang === 'python') {
-    codeEl.textContent = `# Requisição em Python (Requests)\nimport requests\n\nurl = "${targetUrl}"\nresponse = requests.get(url)\ndata = response.json()\nprint(data)`;
+    if (isCsv) {
+      codeEl.textContent = `# Requisição em Python (Pandas direto)\nimport pandas as pd\n\nurl = "${targetUrl}"\ndf = pd.read_csv(url)\nprint(df.head())`;
+    } else if (isBib || isRis) {
+      const ext = isRis ? 'ris' : 'bib';
+      codeEl.textContent = `# Requisição em Python (Requests)\nimport requests\n\nurl = "${targetUrl}"\nres = requests.get(url)\nwith open("exportacao.${ext}", "w", encoding="utf-8") as f:\n    f.write(res.text)\nprint("Arquivo salvo com sucesso!")`;
+    } else {
+      codeEl.textContent = `# Requisição em Python (Requests)\nimport requests\n\nurl = "${targetUrl}"\nresponse = requests.get(url)\ndata = response.json()\nprint(data)`;
+    }
   } else if (lang === 'node') {
     codeEl.textContent = `// Requisição em Node.js (Axios)\nconst axios = require('axios');\n\naxios.get("${targetUrl}")\n  .then(response => console.log(response.data))\n  .catch(error => console.error(error));`;
   } else if (lang === 'r') {
-    codeEl.textContent = `# Requisição em R (httr & jsonlite)\nlibrary(httr)\nlibrary(jsonlite)\n\nres <- GET("${targetUrl}")\ndata <- fromJSON(content(res, "text"))\nprint(data)`;
+    if (isCsv) {
+      codeEl.textContent = `# Requisição em R (read.csv direto)\nurl <- "${targetUrl}"\ndf <- read.csv(url, encoding = "UTF-8")\nhead(df)`;
+    } else if (isBib || isRis) {
+      const ext = isRis ? 'ris' : 'bib';
+      codeEl.textContent = `# Requisição em R (download de arquivo bibliográfico)\nurl <- "${targetUrl}"\ndownload.file(url, destfile = "export.${ext}", mode = "wb")\ncat("Download concluído!\\n")`;
+    } else {
+      codeEl.textContent = `# Requisição em R (httr & jsonlite)\nlibrary(httr)\nlibrary(jsonlite)\n\nres <- GET("${targetUrl}")\ndata <- fromJSON(content(res, "text", encoding = "UTF-8"))\nprint(data)`;
+    }
   }
 }
 

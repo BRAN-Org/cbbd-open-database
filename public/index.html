@@ -479,14 +479,14 @@
         </div>
       </section>
 
-      <!-- 3. DOCS & API SANDBOX TAB -->
+            <!-- 3. DOCS & API SANDBOX TAB -->
       <section id="docs-tab" class="tab-panel">
         <div class="sandbox-card glass-panel" style="margin-bottom: 1.5rem;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
             <div>
               <h2><i class="fa-solid fa-terminal"></i> Interactive REST API Playground</h2>
               <p class="sandbox-desc">
-                Execute chamadas HTTP diretamente pelo navegador, meça o tempo de resposta em milissegundos e obtenha o payload JSON em tempo real.
+                Execute chamadas HTTP diretamente pelo navegador, meça o tempo de resposta em milissegundos e visualize os payloads (JSON, CSV, BibTeX ou RIS) em tempo real.
               </p>
             </div>
             <div id="playground-status-badge" class="playground-status">
@@ -497,10 +497,30 @@
           <div class="sandbox-controls" style="margin-top: 1.25rem;">
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; width: 100%;">
               <span class="badge-method get">GET</span>
-              <select id="playground-endpoint-select" class="filter-select" style="font-family: var(--font-mono); font-weight: 600; flex: 1; min-width: 260px;">
-                <option value="/api/v1/articles?limit=5">GET /api/v1/articles?limit=5 (Listagem Paginada)</option>
-                <option value="/api/v1/articles/stats">GET /api/v1/articles/stats (Estatísticas Consolidadas)</option>
-                <option value="/api/v1/config">GET /api/v1/config (Configuração do Dataset)</option>
+              <select id="playground-endpoint-select" class="filter-select" style="font-family: var(--font-mono); font-weight: 600; flex: 1; min-width: 280px;">
+                <optgroup label="Consultas & Busca">
+                  <option value="/api/v1/articles?limit=5">GET /api/v1/articles?limit=5 (Listagem Paginada)</option>
+                  <option value="/api/v1/articles?q=cienciometria&year=2024&limit=3">GET /api/v1/articles?q=cienciometria&year=2024 (Busca Textual com Filtro)</option>
+                  <option value="/api/v1/articles/ebbc-2022-441">GET /api/v1/articles/ebbc-2022-441 (Consulta por ID Canônico)</option>
+                  <option value="/api/v1/articles/10.22477.01">GET /api/v1/articles/10.22477.01 (Consulta por DOI)</option>
+                </optgroup>
+                <optgroup label="Métricas & Estatísticas">
+                  <option value="/api/v1/articles/stats">GET /api/v1/articles/stats (Estatísticas Consolidadas)</option>
+                  <option value="/api/v1/articles/stats/correlations?limit=5">GET /api/v1/articles/stats/correlations (Matriz de Coocorrência)</option>
+                  <option value="/api/v1/articles/stats/temporal?limit=5">GET /api/v1/articles/stats/temporal (Séries Temporais Empilhadas)</option>
+                  <option value="/api/v1/articles/stats/pareto?limit=8">GET /api/v1/articles/stats/pareto (Análise de Pareto / Bradford)</option>
+                  <option value="/api/v1/articles/stats/scatter">GET /api/v1/articles/stats/scatter (Dispersão & Tendência Linear)</option>
+                </optgroup>
+                <optgroup label="Exportação em Lote">
+                  <option value="/api/v1/articles/export?format=json&limit=3">GET /api/v1/articles/export?format=json (Exportação JSON)</option>
+                  <option value="/api/v1/articles/export?format=csv&limit=3">GET /api/v1/articles/export?format=csv (Exportação CSV com BOM)</option>
+                  <option value="/api/v1/articles/export?format=bibtex&limit=2">GET /api/v1/articles/export?format=bibtex (Exportação BibTeX com PDFs)</option>
+                  <option value="/api/v1/articles/export?format=ris&limit=2">GET /api/v1/articles/export?format=ris (Exportação RIS com L1/UR)</option>
+                </optgroup>
+                <optgroup label="Configuração & Especificação">
+                  <option value="/api/v1/config">GET /api/v1/config (Configuração do Dataset)</option>
+                  <option value="/api/v1/openapi.json">GET /api/v1/openapi.json (Especificação OpenAPI 3.0)</option>
+                </optgroup>
               </select>
               <button class="btn btn-primary" id="btn-execute-api">
                 <i class="fa-solid fa-play"></i> Executar Requisição
@@ -513,17 +533,17 @@
               <label for="sandbox-lang">Gerar Snippet em:</label>
               <select id="sandbox-lang" class="filter-select">
                 <option value="curl">cURL (Terminal / Shell)</option>
+                <option value="python">Python (Requests / Pandas)</option>
+                <option value="r">R (httr / jsonlite)</option>
                 <option value="javascript">JavaScript (Fetch API)</option>
-                <option value="python">Python (Requests)</option>
                 <option value="node">Node.js (Axios)</option>
-                <option value="r">R (httr & jsonlite)</option>
               </select>
             </div>
             <button class="copy-btn" id="sandbox-copy-btn"><i class="fa-regular fa-copy"></i> Copiar Código</button>
           </div>
 
           <div class="code-box">
-            <pre><code id="sandbox-code">// Clique em 'Executar Requisição' para carregar a resposta JSON...</code></pre>
+            <pre><code id="sandbox-code">// Selecione um endpoint ou clique em 'Executar Requisição'...</code></pre>
           </div>
         </div>
 
@@ -534,21 +554,86 @@
             <ul class="docs-menu-list">
               <li><a href="#" class="docs-menu-link active" data-doc="doc-articles"><span class="badge-method get">GET</span> <span>/articles</span></a></li>
               <li><a href="#" class="docs-menu-link" data-doc="doc-article-key"><span class="badge-method get">GET</span> <span>/articles/:key</span></a></li>
-              <li><a href="#" class="docs-menu-link" data-doc="doc-stats"><span class="badge-method get">GET</span> <span>/articles/stats</span></a></li>
               <li><a href="#" class="docs-menu-link" data-doc="doc-export"><span class="badge-method get">GET</span> <span>/export</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-stats"><span class="badge-method get">GET</span> <span>/stats</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-correlations"><span class="badge-method get">GET</span> <span>/correlations</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-temporal"><span class="badge-method get">GET</span> <span>/temporal</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-pareto"><span class="badge-method get">GET</span> <span>/pareto</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-scatter"><span class="badge-method get">GET</span> <span>/scatter</span></a></li>
               <li><a href="#" class="docs-menu-link" data-doc="doc-config"><span class="badge-method get">GET</span> <span>/config</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-openapi"><span class="badge-method get" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">SPEC</span> <span>/openapi.json</span></a></li>
               <li><a href="#" class="docs-menu-link" data-doc="doc-zenodo"><span class="badge-method get" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">FAIR</span> <span>/zenodo</span></a></li>
+              <li><a href="#" class="docs-menu-link" data-doc="doc-recipes"><span class="badge-method get" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">GUIA</span> <span>Receitas Python & R</span></a></li>
             </ul>
           </div>
 
           <div class="docs-main-container">
+
             <!-- Doc 1: Articles List -->
             <div class="doc-card glass-panel active" id="doc-articles">
               <div class="endpoint-header">
                 <span class="badge-method get">GET</span>
                 <span class="endpoint-path">/api/v1/articles</span>
               </div>
-              <p class="doc-intro">Retorna a lista paginada de trabalhos com suporte a múltiplos filtros, ordenação flexível e busca textual global.</p>
+              <p class="doc-intro">
+                Retorna a lista paginada de trabalhos científicos com suporte a múltiplos filtros facetados, ordenação configurável e busca textual global com normalização fonética e de acentuação.
+              </p>
+
+              <div class="doc-callout tip">
+                <h4><i class="fa-solid fa-lightbulb"></i> Busca Textual e Filtros Combinados</h4>
+                <p>O parâmetro <code>q</code> realiza busca insensível a acentos em título, resumo, autores e palavras-chave simultaneamente. Você também pode filtrar por múltiplos anos separando-os por vírgula (ex: <code>?year=2022,2024</code>).</p>
+              </div>
+
+              <h3>Parâmetros de Consulta (Query String)</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead>
+                    <tr><th>Parâmetro</th><th>Tipo</th><th>Padrão</th><th>Descrição & Exemplo</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>q</code></td><td>string</td><td>—</td><td>Busca textual global em título, resumo e autores (ex: <code>cienciometria</code>).</td></tr>
+                    <tr><td><code>year</code></td><td>string</td><td>—</td><td>Filtrar por ano/edição (ex: <code>2024</code> ou <code>2020,2022,2024</code>).</td></tr>
+                    <tr><td><code>author</code></td><td>string</td><td>—</td><td>Filtrar por nome de autor (ex: <code>Vanz</code>).</td></tr>
+                    <tr><td><code>tool</code></td><td>string</td><td>—</td><td>Filtrar por software metodológico (ex: <code>VOSviewer</code>, <code>Bibliometrix</code>).</td></tr>
+                    <tr><td><code>source</code></td><td>string</td><td>—</td><td>Filtrar por fonte de dados utilizada (ex: <code>Web of Science</code>, <code>SciELO</code>).</td></tr>
+                    <tr><td><code>stage</code></td><td>string</td><td>—</td><td>Filtrar por etapa metodológica (ex: <code>Análise de Redes</code>).</td></tr>
+                    <tr><td><code>limit</code></td><td>integer</td><td><code>20</code></td><td>Registros por página. Passe <code>0</code> para exportação completa despaginada.</td></tr>
+                    <tr><td><code>offset</code></td><td>integer</td><td><code>0</code></td><td>Deslocamento inicial para paginação.</td></tr>
+                    <tr><td><code>sort</code></td><td>string</td><td><code>year</code></td><td>Campo de ordenação (<code>year</code>, <code>title</code>, <code>doi</code>).</td></tr>
+                    <tr><td><code>order</code></td><td>string</td><td><code>desc</code></td><td>Direção da ordenação (<code>asc</code> ou <code>desc</code>).</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>Exemplo de Resposta (HTTP 200 OK)</h3>
+              <div class="code-box">
+                <pre><code>{
+  "total": 808,
+  "filteredCount": 1,
+  "limit": 1,
+  "offset": 0,
+  "results": [
+    {
+      "id": "ebbc-2022-441",
+      "doi": "https://doi.org/10.22477.01",
+      "title": "O impacto da produção científica brasileira em agronomy...",
+      "year": 2022,
+      "authors": ["Samile Andrea de Souza Vanz", "Sandra Cristina de Oliveira"],
+      "keywords": ["Autor correspondente", "Impacto de citação", "Agronomia"],
+      "abstract": "Ciências agrárias constituem uma das áreas mais eficientes...",
+      "url": "https://ebbc.inf.br/ojs/index.php/ebbc/article/view/441",
+      "pdf_url": "https://ebbc.inf.br/ojs/index.php/ebbc/article/download/441/378",
+      "event_name": "Encontro Brasileiro de Bibliometria e Cientometria",
+      "edition": "8ª Edição",
+      "tools": ["VOSviewer"],
+      "data_sources": ["Web of Science"],
+      "usage_stages": ["Análise de Redes"],
+      "identifies_tool": "N/A",
+      "is_refined": true
+    }
+  ]
+}</code></pre>
+              </div>
             </div>
 
             <!-- Doc 2: Article By Key -->
@@ -557,43 +642,239 @@
                 <span class="badge-method get">GET</span>
                 <span class="endpoint-path">/api/v1/articles/:key</span>
               </div>
-              <p class="doc-intro">Busca individual por DOI ou identificador primário do registro (ex: <code>10.5281/zenodo.123456</code>).</p>
-            </div>
+              <p class="doc-intro">
+                Recupera os detalhes completos de um artigo específico utilizando seu identificador unívoco. A consulta prioriza correspondência exata antes de recorrer a qualquer busca secundária.
+              </p>
 
-            <!-- Doc 3: Stats -->
-            <div class="doc-card glass-panel" id="doc-stats">
-              <div class="endpoint-header">
-                <span class="badge-method get">GET</span>
-                <span class="endpoint-path">/api/v1/articles/stats</span>
+              <div class="doc-callout note">
+                <h4><i class="fa-solid fa-fingerprint"></i> Formatos de Identificador Aceitos</h4>
+                <p>Você pode consultar passando o <strong>ID canônico</strong> (ex: <code>ebbc-2022-441</code>), o <strong>número do DOI</strong> (ex: <code>10.22477.01</code>) ou o <strong>DOI completo com prefixo</strong> (ex: <code>https://doi.org/10.22477.01</code>, codificado na URL). Artigos de 2012–2016 sem DOI de origem devem ser consultados pelo ID canônico e retornam rigorosamente <code>doi: "N/A"</code>.</p>
               </div>
-              <p class="doc-intro">Retorna agregados consolidados, distribuições históricas por ano, top autores, seções e palavras-chave.</p>
+
+              <h3>Parâmetros de Rota (Path)</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>key</code></td><td>string</td><td>Sim</td><td>ID estruturado canônico (ex: <code>ebbc-2022-441</code>) ou DOI registrado na origem.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>Respostas HTTP</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Código</th><th>Condição</th><th>Payload</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>200 OK</code></td><td>Artigo localizado</td><td>Objeto completo do artigo com 100% dos metadados, links de PDF e URL oficial.</td></tr>
+                    <tr><td><code>404 Not Found</code></td><td>Chave não encontrada</td><td><code>{"error": "Registro com a chave '...' não encontrado."}</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <!-- Doc 5: Export -->
+            <!-- Doc 3: Export -->
             <div class="doc-card glass-panel" id="doc-export">
               <div class="endpoint-header">
                 <span class="badge-method get">GET</span>
                 <span class="endpoint-path">/api/v1/articles/export</span>
               </div>
-              <p class="doc-intro">Exporta o dataset completo ou filtrado nos formatos <code>JSON</code>, <code>CSV</code> (com BOM UTF-8 para Excel), <code>BibTeX</code> (<code>.bib</code> para LaTeX/Zotero) ou <code>RIS</code> (para VOSviewer, Mendeley e bibliometrix).</p>
+              <p class="doc-intro">
+                Exporta o acervo integral ou subconjuntos filtrados nos 4 principais formatos padronizados para pesquisa científica, cienciometria e ciência de dados.
+              </p>
+
+              <div class="doc-callout tip">
+                <h4><i class="fa-solid fa-download"></i> Extração Massiva Despaginada</h4>
+                <p>O endpoint de exportação não impõe cortes artificiais. Ao omitir <code>limit</code> ou passar <code>limit=0</code>, <strong>100% dos registros</strong> correspondentes aos seus filtros serão exportados no fluxo de resposta.</p>
+              </div>
+
+              <h3>Formatos Suportados (?format=)</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Formato</th><th>Extensão</th><th>Content-Type</th><th>Aplicações & Diferenciais</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td><code>json</code></td>
+                      <td><code>.json</code></td>
+                      <td><code>application/json</code></td>
+                      <td>Array JSON plano com todos os campos estruturados para ingestão em Python (pandas), NoSQL e pipelines.</td>
+                    </tr>
+                    <tr>
+                      <td><code>csv</code></td>
+                      <td><code>.csv</code></td>
+                      <td><code>text/csv; charset=utf-8</code></td>
+                      <td>Planilha com <strong>UTF-8 BOM</strong> para abertura nativa e sem distorção de acentuação no Excel, SPSS, LibreOffice e R.</td>
+                    </tr>
+                    <tr>
+                      <td><code>bibtex</code> ou <code>bib</code></td>
+                      <td><code>.bib</code></td>
+                      <td><code>application/x-bibtex</code></td>
+                      <td>Entradas <code>@inproceedings</code> com campos <code>url</code> e <code>eprint</code> (link direto para PDF) para LaTeX, Overleaf e Zotero.</td>
+                    </tr>
+                    <tr>
+                      <td><code>ris</code></td>
+                      <td><code>.ris</code></td>
+                      <td><code>application/x-research-info-systems</code></td>
+                      <td>Registros <code>TY - CONF</code> com tags <code>L1</code> (anexo PDF direto) e <code>UR</code> para VOSviewer, Mendeley, EndNote e Bibliometrix (R).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>Exemplo de Comando cURL para Download</h3>
+              <div class="code-box">
+                <pre><code># Baixar acervo completo em RIS para o VOSviewer
+curl -s -L "https://ebbc-open-database.vercel.app/api/v1/articles/export?format=ris" -o ebbc_acervo.ris
+
+# Baixar apenas trabalhos de 2024 em CSV para Excel
+curl -s -L "https://ebbc-open-database.vercel.app/api/v1/articles/export?format=csv&year=2024" -o ebbc_2024.csv</code></pre>
+              </div>
             </div>
 
-            <!-- Doc 6: Config -->
+            <!-- Doc 4: Stats -->
+            <div class="doc-card glass-panel" id="doc-stats">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats</span>
+              </div>
+              <p class="doc-intro">
+                Retorna indicadores quantitativos agregados em tempo real sobre todo o acervo, incluindo volumetria de autores únicos, rankings das ferramentas mais utilizadas e séries históricas por edição.
+              </p>
+
+              <h3>Estrutura do Objeto Retornado</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Chave</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>totalRecords</code></td><td>integer</td><td>Total de artigos catalogados na base de dados (808).</td></tr>
+                    <tr><td><code>metrics</code></td><td>object</td><td>Totais de autores únicos, ferramentas distintas e fontes mapeadas.</td></tr>
+                    <tr><td><code>topLists</code></td><td>object</td><td>Rankings top-10 de Softwares (<code>topTools</code>), Fontes (<code>topSources</code>), Autores e Palavras-chave.</td></tr>
+                    <tr><td><code>breakdowns</code></td><td>object</td><td>Distribuição anual (<code>yearDistribution</code>) e por etapas metodológicas (<code>stageBreakdown</code>).</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Doc 5: Correlations -->
+            <div class="doc-card glass-panel" id="doc-correlations">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats/correlations</span>
+              </div>
+              <p class="doc-intro">
+                Calcula a matriz de coocorrência bidimensional entre duas variáveis metodológicas curadas (ex: Softwares x Fontes de Dados) para construção de redes cienciométricas e mapas de calor (heatmaps).
+              </p>
+
+              <h3>Parâmetros de Consulta</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Padrão</th><th>Descrição</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>fieldA</code></td><td>string</td><td><code>tools</code></td><td>Primeiro eixo da matriz (ex: <code>tools</code>, <code>data_sources</code>).</td></tr>
+                    <tr><td><code>fieldB</code></td><td>string</td><td><code>data_sources</code></td><td>Segundo eixo da matriz.</td></tr>
+                    <tr><td><code>limit</code></td><td>integer</td><td><code>6</code></td><td>Dimensão máxima N x N das categorias principais.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Doc 6: Temporal -->
+            <div class="doc-card glass-panel" id="doc-temporal">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats/temporal</span>
+              </div>
+              <p class="doc-intro">
+                Calcula a proporção percentual relativa normalizada a 100% ano a ano das categorias selecionadas, permitindo analisar a evolução ou declínio de ferramentas ao longo do tempo.
+              </p>
+
+              <h3>Parâmetros de Consulta</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Padrão</th><th>Descrição</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>field</code></td><td>string</td><td><code>tools</code></td><td>Dimensão analisada (ex: <code>tools</code>, <code>data_sources</code>).</td></tr>
+                    <tr><td><code>limit</code></td><td>integer</td><td><code>5</code></td><td>Número de categorias com maior representatividade histórica.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Doc 7: Pareto -->
+            <div class="doc-card glass-panel" id="doc-pareto">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats/pareto</span>
+              </div>
+              <p class="doc-intro">
+                Calcula as frequências absolutas e o percentual cumulativo de termos ou autores para testes empíricos de leis bibliométricas (Lei de Bradford, Lei de Lotka e Curva de Pareto 80/20).
+              </p>
+
+              <h3>Parâmetros de Consulta</h3>
+              <div class="table-responsive">
+                <table class="params-table">
+                  <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Padrão</th><th>Descrição</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>field</code></td><td>string</td><td><code>authors</code></td><td>Campo analisado (<code>authors</code>, <code>keywords</code>, <code>tools</code>).</td></tr>
+                    <tr><td><code>limit</code></td><td>integer</td><td><code>10</code></td><td>Tamanho da amostra no topo do ranking.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Doc 8: Scatter -->
+            <div class="doc-card glass-panel" id="doc-scatter">
+              <div class="endpoint-header">
+                <span class="badge-method get">GET</span>
+                <span class="endpoint-path">/api/v1/articles/stats/scatter</span>
+              </div>
+              <p class="doc-intro">
+                Retorna pares de coordenadas (X, Y) agregados e os coeficientes da reta de regressão linear para gráficos de dispersão bibliométrica e correlação de variáveis.
+              </p>
+            </div>
+
+            <!-- Doc 9: Config -->
             <div class="doc-card glass-panel" id="doc-config">
               <div class="endpoint-header">
                 <span class="badge-method get">GET</span>
                 <span class="endpoint-path">/api/v1/config</span>
               </div>
-              <p class="doc-intro">Retorna a configuração pública do dataset, metadados da instituição, facetas e esquemas de busca.</p>
+              <p class="doc-intro">
+                Fornece a configuração institucional completa do acervo, esquemas de facetas configuradas, campos de ordenação e metadados de governança da BRAN Org.
+              </p>
             </div>
 
-            <!-- Doc 7: Zenodo FAIR Archive & Raw Data -->
+            <!-- Doc 10: OpenAPI 3.0 Spec -->
+            <div class="doc-card glass-panel" id="doc-openapi">
+              <div class="endpoint-header">
+                <span class="badge-method get" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">OPENAPI 3.0</span>
+                <span class="endpoint-path">/api/v1/openapi.json</span>
+              </div>
+              <p class="doc-intro">
+                Especificação técnica formal no padrão OpenAPI 3.0.3 (Swagger) em JSON, gerada dinamicamente para consumo por ferramentas de auditoria e integração de sistemas.
+              </p>
+
+              <div class="doc-callout tip">
+                <h4><i class="fa-solid fa-code-compare"></i> Ferramentas Compatíveis</h4>
+                <p>Importe a URL <code>https://ebbc-open-database.vercel.app/api/v1/openapi.json</code> diretamente no <strong>Postman</strong>, <strong>Insomnia</strong>, <strong>Swagger UI</strong> ou utilize o <code>openapi-generator</code> para gerar SDKs de cliente em Python, R, Go ou Java com tipagem estática automática.</p>
+              </div>
+
+              <div style="margin-top: 1rem;">
+                <a href="/api/v1/openapi.json" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                  <i class="fa-solid fa-file-code"></i> Abrir OpenAPI 3.0 JSON no Navegador
+                </a>
+              </div>
+            </div>
+
+            <!-- Doc 11: Zenodo FAIR Archive & Raw Data -->
             <div class="doc-card glass-panel" id="doc-zenodo">
               <div class="endpoint-header">
                 <span class="badge-method get" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">FAIR DATA</span>
                 <span class="endpoint-path">CERN Zenodo Archive &amp; Full Raw Data</span>
               </div>
-              <p class="doc-intro">Preservação permanente e imutável de todos os artefatos originais e brutos da base no repositório CERN/Zenodo sob DOI permanente registrado.</p>
+              <p class="doc-intro">
+                Preservação permanente e imutável de todos os artefatos originais e brutos da base no repositório CERN/Zenodo sob DOI permanente registrado.
+              </p>
               <div class="doc-details" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
                 <p>O pacote completo arquivado no Zenodo inclui:</p>
                 <ul style="margin: 0.5rem 0 1rem 1.5rem;">
@@ -609,6 +890,50 @@
                 </div>
               </div>
             </div>
+
+            <!-- Doc 12: Recipes Python & R -->
+            <div class="doc-card glass-panel" id="doc-recipes">
+              <div class="endpoint-header">
+                <span class="badge-method get" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">RECEITAS</span>
+                <span class="endpoint-path">Exemplos Práticos em Python &amp; R</span>
+              </div>
+              <p class="doc-intro">
+                Scripts reproduzíveis para integrar a API diretamente em ambientes de pesquisa bibliométrica, ciência de dados e mineração de texto.
+              </p>
+
+              <h3>Python: Carregamento do Acervo em Pandas</h3>
+              <div class="code-box">
+                <pre><code>import pandas as pd
+import requests
+
+# Baixar os 808 artigos despaginados
+data = requests.get("https://ebbc-open-database.vercel.app/api/v1/articles/export?format=json").json()
+df = pd.DataFrame(data)
+
+print(f"Total: {len(df)} artigos | Período: {df['year'].min()} a {df['year'].max()}")
+print(f"Artigos com PDF direto: {df['pdf_url'].notna().sum()}/{len(df)}")</code></pre>
+              </div>
+
+              <h3>R: Download em RIS para Análise no Bibliometrix</h3>
+              <div class="code-box">
+                <pre><code># Download direto do arquivo RIS compatível com bibliometrix
+ris_url <- "https://ebbc-open-database.vercel.app/api/v1/articles/export?format=ris"
+download.file(ris_url, destfile = "ebbc_acervo.ris", mode = "wb")
+
+# Ingestão e análise
+library(bibliometrix)
+M <- convert2df(file = "ebbc_acervo.ris", dbsource = "isi", format = "ris")
+results <- biblioAnalysis(M, sep = ";")
+summary(results)</code></pre>
+              </div>
+
+              <h3>Terminal Bash: Extração de Links de PDFs via cURL + jq</h3>
+              <div class="code-box">
+                <pre><code># Extrair lista de IDs e URLs de PDFs de 2024
+curl -s "https://ebbc-open-database.vercel.app/api/v1/articles/export?format=json&year=2024"   | jq -r '.[] | "\(.id) \(.pdf_url)"' > pdf_urls_2024.txt</code></pre>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

@@ -62,14 +62,23 @@ sqlite3 data/{{PRIMARY_FILE_BASE}}.sqlite "SELECT year, COUNT(*) as total FROM a
 
 ## 🌐 API REST Pública
 
-Endpoints públicos e gratuitos (sem necessidade de chave de autenticação):
+Endpoints públicos e gratuitos (sem necessidade de chave de autenticação), servidos com alta disponibilidade e CORS global habilitado:
+
+- 📑 **Guia Técnico Completo:** Consulte o [Guia Detalhado da API (docs/API.md)](docs/API.md) com parâmetros, schemas e receitas.
+- 📋 **Especificação OpenAPI 3.0:** [`/api/v1/openapi.json`](/api/v1/openapi.json) (compatível com Swagger, Postman e Insomnia).
 
 | Método | Endpoint | Finalidade |
 | :--- | :--- | :--- |
-| `GET` | `/api/v1/articles` | Busca textual (`?q=`), filtros facetados (`?year=`, `?author=`) e paginação |
-| `GET` | `/api/v1/articles/:key` | Consulta individual por ID ou DOI |
-| `GET` | `/api/v1/articles/stats` | Métricas consolidadas, rankings de autores e palavras-chave |
-| `GET` | `/api/v1/articles/export?format=csv` | Download instantâneo dos dados filtrados em CSV (BOM UTF-8) |
+| `GET` | `/api/v1/articles` | Busca textual (`?q=`), filtros facetados (`?year=`, `?author=`), ordenação e paginação |
+| `GET` | `/api/v1/articles/:key` | Consulta individual por ID canônico ou DOI |
+| `GET` | `/api/v1/articles/export` | Download do acervo em **JSON**, **CSV** (BOM UTF-8), **BibTeX** (`.bib`) ou **RIS** (`.ris`) |
+| `GET` | `/api/v1/articles/stats` | Métricas consolidadas, rankings de softwares, fontes bibliográficas e autores |
+| `GET` | `/api/v1/articles/stats/correlations` | Matriz de coocorrência 2D entre metadados curados (ideal para redes e heatmaps) |
+| `GET` | `/api/v1/articles/stats/temporal` | Séries temporais normalizadas ano a ano para visualizações 100% empilhadas |
+| `GET` | `/api/v1/articles/stats/pareto` | Frequências e percentuais acumulados para testes de Bradford e Pareto |
+| `GET` | `/api/v1/articles/stats/scatter` | Coordenadas de dispersão e coeficientes da reta de regressão linear |
+| `GET` | `/api/v1/config` | Configuração estruturada do acervo, esquemas de busca e metadados institucionais |
+| `GET` | `/api/v1/openapi.json` | Contrato formal OpenAPI 3.0.3 machine-readable |
 
 > **Executar localmente:** `npm install && npm start` (disponível em `http://localhost:3000`).
 
