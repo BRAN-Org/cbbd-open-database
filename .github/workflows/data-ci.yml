@@ -1,0 +1,180 @@
+name: BRAN Data CI & CRONA Zenodo Sync
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'data/**'
+      - 'provenance.json'
+      - 'schemas/**'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'data/**'
+      - 'provenance.json'
+      - 'schemas/**'
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      sync_zenodo:
+        description: 'Sincronizar pacotes no Zenodo'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  audit-and-sync:
+    name: CRONA Data Audit & Zenodo Sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Obter Token da CRONA (GitHub App)
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        continue-on-error: true
+        with:
+          app-id: ${{ secrets.CRONA_APP_ID }}
+          private-key: ${{ secrets.CRONA_PRIVATE_KEY }}
+
+      - name: Definir Identidade de Autenticação
+        id: auth
+        run: |
+          if [ -n "${{ steps.app-token.outputs.token }}" ]; then
+            echo "token=${{ steps.app-token.outputs.token }}" >> $GITHUB_OUTPUT
+            echo "bot_name=crona-bot[bot]" >> $GITHUB_OUTPUT
+          else
+            echo "token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+            echo "bot_name=github-actions[bot]" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Dependências de Auditoria
+        run: pip install jsonschema requests check-jsonschema
+
+      - name: Localizar Dataset Principal
+        id: find-data
+        run: |
+          TARGET=$(find data -maxdepth 1 -name "*_articles.json" 2>/dev/null | head -n 1)
+          if [ -z "$TARGET" ]; then
+            TARGET=$(find data -maxdepth 1 -name "*.json" 2>/dev/null | head -n 1)
+          fi
+          echo "target_file=$TARGET" >> $GITHUB_OUTPUT
+          echo "Dataset detectado: $TARGET"
+
+      # 1. Auditoria e Code Review da CRONA em Pull Requests
+      - name: Executar Auditoria da CRONA (PR Mode)
+        id: crona-audit
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          python3 scripts/crona_audit_engine.py \
+            --file "${{ steps.find-data.outputs.target_file }}" \
+            --schema schemas/article.v1.schema.json \
+            --provenance provenance.json \
+            --output-md crona_report.md \
+            --output-review crona_review.json \
+            --sample 25
+
+      - name: Publicar Sticky Review da CRONA no PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.auth.outputs.token }}
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('crona_review.json')) {
+              core.setFailed("Relatório crona_review.json não foi gerado.");
+              return;
+            }
+
+            const reviewData = JSON.parse(fs.readFileSync('crona_review.json', 'utf8'));
+            const isApproved = reviewData.decision === 'APPROVE';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const stickyMarker = '<!-- id: crona-integrity-report -->';
+            const botComment = comments.find(c => c.body && c.body.includes(stickyMarker));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: reviewData.summary
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: reviewData.summary
+              });
+            }
+
+            if (!isApproved) {
+              core.setFailed("Inconsistências no dataset ou violação de schema detectadas pela CRONA.");
+            }
+
+      # 2. Recompilação de Formatos Derivados e Hashes no Push na Main
+      - name: Compilar Dataset e Atualizar Hashes (Push / Dispatch)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          python3 scripts/build_dataset.py "${{ steps.find-data.outputs.target_file }}"
+
+      - name: Comitar Proveniência Atualizada
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "${{ steps.auth.outputs.bot_name }}"
+          git config user.email "${{ steps.auth.outputs.bot_name }}@users.noreply.github.com"
+          git add provenance.json data/*.csv data/*.sqlite
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração nos arquivos para comitar."
+          else
+            git commit -m "chore(data): sincronizar formatos derivados e proveniência [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }} || true
+            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }}
+          fi
+
+      # 3. Sincronização e Upload no Zenodo em Release CalVer
+      - name: Sincronizar Pacote no Zenodo (Release CalVer)
+        if: github.event_name == 'release' || inputs.sync_zenodo == true
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+        run: |
+          TAG_NAME="${{ github.event.release.tag_name || github.ref_name }}"
+          echo "Iniciando upload de pacote para Zenodo sob a tag $TAG_NAME..."
+          python3 scripts/crona_zenodo_sync.py \
+            --file "${{ steps.find-data.outputs.target_file }}" \
+            --tag "$TAG_NAME" \
+            --upload
+
+      - name: Comitar Registro de Upload Zenodo
+        if: github.event_name == 'release' || inputs.sync_zenodo == true
+        run: |
+          git config user.name "${{ steps.auth.outputs.bot_name }}"
+          git config user.email "${{ steps.auth.outputs.bot_name }}@users.noreply.github.com"
+          git add provenance.json
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração no provenance.json."
+          else
+            git commit -m "chore(zenodo): registrar depósito da release por CRONA [skip ci]"
+            git pull --rebase origin ${{ github.ref_name }} || true
+            git push "https://x-access-token:${{ steps.auth.outputs.token }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }}
+          fi
