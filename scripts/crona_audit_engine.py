@@ -433,6 +433,8 @@ def generate_pr_markdown_report(schema_status, doi_summary, file_path):
     else:
         res_rate_str = "`N/A` *(Acervo sem emissão de DOIs globais)*"
 
+    sha256_hash = calculate_sha256(file_path) if os.path.exists(file_path) else "N/A"
+
     lines = [
         STICKY_MARKER,
         "### Integridade e Validação do Acervo\n",
@@ -442,6 +444,7 @@ def generate_pr_markdown_report(schema_status, doi_summary, file_path):
         "| Métrica de Auditoria | Status / Valor | Detalhes |",
         "| :--- | :--- | :--- |",
         f"| **Conformidade Estrutural (Schema JSON)** | {'✅ Válido' if schema_valid else '❌ Inconsistente'} | {schema_status.get('message', '')} |",
+        f"| **Integridade Criptográfica (SHA-256)** | `{sha256_hash}` | Hash do arquivo bruto JSON |",
         f"| **Total de Artigos Catalogados** | `{total_records}` | Registros no dataset |",
         f"| **Taxa Global de Identificação** | `{global_id_rate * 100:.1f}%` | {identified_count}/{total_records} registros com ID persistente ou canônico |",
         f"| **Identificadores DOI (CrossRef / Datacite)** | `{total_with_doi}` | {doi_summary['valid_count']} ativos / {doi_summary['broken_count']} inativos na fonte |",
@@ -497,7 +500,7 @@ O parser JSON não conseguiu ler o arquivo:
 """
 
 
-def update_provenance_file(provenance_path, doi_summary, raw_data_sha256=None):
+def update_provenance_file(provenance_path, doi_summary, raw_data_sha256=None, file_path=None):
     """Atualiza o provenance.json da base com os dados da auditoria realizada."""
     if not os.path.exists(provenance_path):
         print(f"⚠️ provenance.json não encontrado em {provenance_path}")
@@ -511,9 +514,14 @@ def update_provenance_file(provenance_path, doi_summary, raw_data_sha256=None):
     prov["global_identification_rate"] = doi_summary.get("global_id_rate", 1.0)
     prov["identifiers_breakdown"] = doi_summary.get("id_counts", {})
     prov["last_audit_at"] = now_iso
+    prov["last_audited_at"] = now_iso
 
     if raw_data_sha256:
         prov["raw_data_sha256"] = raw_data_sha256
+        if "checksums" not in prov:
+            prov["checksums"] = {}
+        if file_path:
+            prov["checksums"][os.path.basename(file_path)] = raw_data_sha256
 
     if "audit_history" not in prov:
         prov["audit_history"] = []
@@ -672,7 +680,7 @@ def main():
     # ATUALIZAÇÃO DO PROVENANCE
     if args.update_provenance and args.provenance:
         file_hash = calculate_sha256(args.file)
-        update_provenance_file(args.provenance, doi_summary, raw_data_sha256=file_hash)
+        update_provenance_file(args.provenance, doi_summary, raw_data_sha256=file_hash, file_path=args.file)
 
     # Exit code: 0 se schema passou, 1 se schema falhou
     sys.exit(0 if schema_status["valid"] else 1)
