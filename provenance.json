@@ -173,10 +173,10 @@
       }
     }
   ],
-  "last_audited_at": "2026-11-09T13:26:12.280343+00:00",
+  "last_audited_at": "2026-11-09T13:26:40.343569+00:00",
   "checksums": {
     "cbbd_articles.json": "b9afa2a6dda1465d2de7a6c42556aaa96c653c51f07b1ff000135219ea06e988",
     "cbbd_articles.csv": "f77fc06f200393d6645a942f37d07fd66d05912876c53930102ba58f930cc12e",
-    "cbbd_articles.sqlite": "97ed896a2f3de97cd091a1e85c696841fbd3a8361e4fcaed1e4386ca66630a66"
+    "cbbd_articles.sqlite": "b80642f63ec0aee48ba40cfb4723d1cc0202857423df732ffc8c045d20328b37"
   }
 }
